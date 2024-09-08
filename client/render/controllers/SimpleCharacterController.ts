@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Rapier, { RayColliderHit } from '@dimforge/rapier3d';
 import { RAPIER, usePhysics, useRenderSize, useScene } from '../init'
-import { useRenderer } from './../init'
+import { useRenderer } from '../init'
 import { PhysicsObject, addPhysics } from '../physics/physics'
 import { GRAVITY } from '../physics/utils/constants'
 import { _calculateObjectSize } from './utils/objects'
@@ -10,8 +10,7 @@ import AvatarController from './AvatarController';
 import InputManager, { KEYS } from './InputManager';
 import ZoomController from './ZoomController';
 import { DOWN, FIVE, FORWARD, HALF_PI, LEFT, ONE, RIGHT, UP, ZERO } from './utils/helpers';
-import HeightController from './HeightController';
-import HeadBobController from './HeadBbController';
+import { Vector2 } from '../../../server/lib/vector.mts';
 
 
 // * local variables
@@ -22,11 +21,9 @@ const vec3_1 = new THREE.Vector3()
 let ray_0: Rapier.Ray
 
 // * Responsible for controlling the character movement, rotation and physics
-class CharacterController extends THREE.Mesh {
+class SimpleCharacterController extends THREE.Mesh {
   camera: THREE.PerspectiveCamera
   inputManager: InputManager
-  headBobController: HeadBobController
-  heightController: HeightController
   phi: number
   theta: number
   objects: any
@@ -35,28 +32,25 @@ class CharacterController extends THREE.Mesh {
   zoomController: ZoomController
   physicsObject: PhysicsObject
   avatar: AvatarController
+  networkPosition: Vector2
 
   constructor(avatar: AvatarController, camera: THREE.PerspectiveCamera) {
     super();
 
     // init position
     this.position.copy(avatar.avatar.position)
+    
+    // maybe get it from server on createGame?
+    this.networkPosition = new Vector2(avatar.avatar.position.x, avatar.avatar.position.y);
 
     this.camera = camera;
     this.avatar = avatar;
 
     this.inputManager = new InputManager()
-    this.headBobController = new HeadBobController()
     this.zoomController = new ZoomController()
-    this.heightController = new HeightController()
 
     // physics
     this.physicsObject = this.initPhysics(avatar)
-
-    // ! Rapier's character controller is bugged
-    // // The gap the controller will leave between the character and its environment.
-    // const OFFSET = 0.01
-    // this.characterController = physics.createCharacterController(OFFSET)
 
     this.startZoomAnimation = 0
 
@@ -69,8 +63,6 @@ class CharacterController extends THREE.Mesh {
   update(timestamp: number, deltaTime: number) {
     this.updateRotation()
     this.updateTranslation(deltaTime)
-    this.updateGravity(timestamp, deltaTime)
-    this.detectGround()
     this.updateZoom(timestamp, deltaTime)
     this.updateCamera(timestamp, deltaTime)
     this.inputManager.update()
@@ -91,65 +83,6 @@ class CharacterController extends THREE.Mesh {
     return physicsObject
   }
 
-  detectGround() {
-    const physics = usePhysics()
-    const avatarHalfHeight = this.avatar.height / 2
-
-    // set collider position
-    const colliderPosition = vec3_0.copy(this.position)
-    this.physicsObject.collider.setTranslation(colliderPosition)
-
-    // hitting the ground
-    const rayOrigin = vec3_1.copy(this.position)
-    // ray origin is at the foot of the avatar
-    rayOrigin.y -= avatarHalfHeight
-
-    const ray = ray_0
-    ray.origin = rayOrigin
-    ray.dir = DOWN
-
-    const groundUnderFootHit = physics.castRay(
-      ray,
-      1000,
-      true,
-      RAPIER.QueryFilterFlags.EXCLUDE_DYNAMIC,
-      undefined,
-      this.physicsObject.collider,
-      this.physicsObject.rigidBody
-    )
-
-    if (groundUnderFootHit) {
-      const hitPoint = ray.pointAt(groundUnderFootHit.timeOfImpact) as THREE.Vector3
-      const distance = rayOrigin.y - hitPoint.y
-      if (distance <= 0) {
-        // * Grounded
-        this.heightController.setGrounded(true)
-      } else {
-        this.heightController.lastGroundHeight = hitPoint.y + avatarHalfHeight
-        this.heightController.setGrounded(false)
-      }
-    } else {
-      // * Shoot another ray up to see if we've passed the ground
-      ray.dir = UP
-      const groundAboveFootHit = physics.castRay(
-        ray,
-        this.avatar.height / 2,
-        true,
-        RAPIER.QueryFilterFlags.EXCLUDE_DYNAMIC,
-        undefined,
-        this.physicsObject.collider,
-        this.physicsObject.rigidBody
-      )
-
-      if (groundAboveFootHit) {
-        // * passed the ground
-        this.position.y = this.heightController.lastGroundHeight
-        this.heightController.setGrounded(true)
-      } else {
-        this.heightController.setGrounded(false)
-      }
-    }
-  }
 
   updateZoom(timestamp: number, deltaTime: number) {
     this.zoomController.update(
@@ -159,9 +92,6 @@ class CharacterController extends THREE.Mesh {
     )
   }
 
-  updateGravity(timestamp: number, deltaTime: number) {
-    this.heightController.update(timestamp, deltaTime)
-  }
   updateCamera(timestamp: number, deltaTime: number) {
     this.camera.position.copy(this.position)
     // this.camera.position.y += this.avatar.height / 2
@@ -176,10 +106,8 @@ class CharacterController extends THREE.Mesh {
     this.camera.position.add(cameraOffset)
     this.camera.lookAt(this.position)
 
-    // head bob
     const isFirstPerson = this.zoomController.zoom <= this.avatar.width
     if (isFirstPerson) {
-      this.camera.position.y += this.headBobController.getHeadBob(deltaTime, this.isMoving2D)
 
       // keep looking at the same position in the object in front
       const physics = usePhysics()
@@ -228,16 +156,6 @@ class CharacterController extends THREE.Mesh {
     this.position.add(vec3_0)
     this.position.add(vec3_1)
 
-    // Height
-    const elevationFactor = this.inputManager.runActionByKey(KEYS.space, ONE, ZERO)
-
-    // Jump
-    if (this.heightController.grounded) {
-      this.heightController.setJumpFactor(elevationFactor)
-    }
-
-    this.position.y += this.heightController.movePerFrame
-
     this.isMoving2D = forwardVelocity != 0 || sideVelocity != 0
   }
 
@@ -260,6 +178,8 @@ class CharacterController extends THREE.Mesh {
 
     this.quaternion.copy(q)
   }
+
+  
 }
 
-export default CharacterController;
+export default SimpleCharacterController;

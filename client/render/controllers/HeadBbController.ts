@@ -12,7 +12,7 @@ class HeadBobController {
     this.headBobActive = false
   }
 
-  getHeadBob(timeDiff: number, isMoving: boolean) {
+  getHeadBob(deltaTime: number, isMoving: boolean) {
     const HEAD_BOB_DURATION = 0.1
     const HEAD_BOB_FREQUENCY = 0.8
     const HEAD_BOB_AMPLITUDE = 0.3
@@ -27,7 +27,7 @@ class HeadBobController {
       const currentAmount = this.headBobTimer * HEAD_BOB_FREQUENCY * (1 / HEAD_BOB_DURATION)
       const headBobDiff = currentAmount % STEP
 
-      this.headBobTimer += timeDiff
+      this.headBobTimer += deltaTime
       this.headBobAmount = Math.sin(currentAmount) * HEAD_BOB_AMPLITUDE
 
       if (headBobDiff < this.lastHeadBobDiff) {

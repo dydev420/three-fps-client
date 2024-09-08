@@ -17,7 +17,7 @@ class ZoomController {
     this.isAnimating = false
   }
 
-  update(zoomLevel: number, timestamp: number, timeDiff: number) {
+  update(zoomLevel: number, timestamp: number, deltaTime: number) {
     const time = timestamp * SCROLL_ANIMATION_SPEED
     const zlClamped = clamp(zoomLevel, MIN_ZOOM_LEVEL, MAX_ZOOM_LEVEL)
 
