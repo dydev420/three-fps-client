@@ -1,13 +1,12 @@
 import * as THREE from 'three';
 import { _calculateObjectSize } from './utils/objects';
 import CharacterController from './CharacterController';
-import SimpleCharacterController from './SimpleCharacterController';
+import type { Game } from '../../game';
 
 // Responsible for controlling the avatar mesh and the character controller
 class AvatarController {
   avatar: THREE.Mesh
-  // characterController: CharacterController
-  characterController: SimpleCharacterController
+  characterController: CharacterController
   height: number
   width: number
 
@@ -17,8 +16,7 @@ class AvatarController {
     const size = _calculateObjectSize(avatar)
     this.width = size.x
     this.height = size.y
-    // this.characterController = new CharacterController(this, camera)
-    this.characterController = new SimpleCharacterController(this, camera)
+    this.characterController = new CharacterController(this, camera)
   }
 
   update(timestamp: number, deltaTime: number) {

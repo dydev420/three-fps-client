@@ -115,7 +115,7 @@ export const initEngine = async () => {
   debugManager = new DebugManager(scene, game, false);
 
   // advanced controls
-  controls = new AvatarController(capsule, camera, game);
+  controls = new AvatarController(capsule, camera);
 
   // config
   // generalLoader = new GeneralLoader()
