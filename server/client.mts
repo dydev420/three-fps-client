@@ -178,9 +178,6 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
     ctx.fillStyle = '#181818';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-console.log(ctx.canvas.width);
-
-
     if (ws === undefined) {
       const label = "Not Connected";
       const labelSize = ctx.measureText(label);

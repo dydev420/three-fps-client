@@ -1,9 +1,20 @@
+// require('dotenv').config();
+import 'dotenv/config';
+
 import { WebSocketServer, WebSocket } from "ws";
 import { Vector2 } from "./lib/vector.mjs";
 import * as common from './common.mjs';
 import type { Player } from "./common.mjs";
+import app from "./app.mts";
 
 
+
+// init express server to serve html
+app.listen(process.env.PORT, () => console.log('Express Server Started on PORT:', process.env.PORT));
+
+/**
+ * Multiplayer Websocket server
+ */
 const STATS_AVERAGE_CAPACITY = 30;
 
 interface Stats {
