@@ -1,1 +1,4 @@
 runtime: nodejs20
+
+env_variables:
+  WS_PORT: 6970
