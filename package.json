@@ -8,7 +8,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "server": "tsx watch ./server/server.mts",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "start": "tsx ./server/server.mts"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
