@@ -85,7 +85,9 @@ function printStats() {
 
 interface PlayerOnServer extends Player {
   ws: WebSocket,
+  newDirection: number,
   newMoving: number,
+  turned: boolean,
 }
 
 const players = new Map<number, PlayerOnServer>()
@@ -120,7 +122,8 @@ wss.on('connection', (ws) => {
     direction: 0,
     moving: 0,
     newMoving: 0,
-    moved: false,
+    newDirection: 0,
+    turned: false,
   };
 
   console.log(`** Client id:${id} Connected.`);
@@ -146,6 +149,9 @@ wss.on('connection', (ws) => {
         const start = common.PlayerMovingStruct.start.read(view);
         
         player.newMoving = common.applyDirectionMask(player.newMoving, direction, start)
+      } else if (common.PlayerTurningStruct.verify(view)) {
+        player.newDirection = common.PlayerTurningStruct.direction.read(view);
+        player.turned = true;
       } else if (common.PingPongStruct.verifyPing(view)) {
         pingIds.set(id, common.PingPongStruct.timestamp.read(view));
       } else {
@@ -277,7 +283,10 @@ const tick = () => {
   {
     let movedCount = 0;
     players.forEach((player) => {
-      if (player.newMoving !== player.moving) {
+      if (
+          player.newMoving !== player.moving
+          || (player.turned && player.newDirection !== player.direction)
+        ) {
         movedCount++;
       }
     });
@@ -289,9 +298,16 @@ const tick = () => {
       
       let movedIndex = 0;
       players.forEach((player) => {
+        let moved = false;
         if (player.newMoving !== player.moving) {
           player.moving = player.newMoving;
+          moved = true;
+        } else if (player.turned && player.newDirection !== player.direction) {
+          player.direction = player.newDirection;
+          moved = true;
+        }
     
+        if (moved){
           const offset = common.BatchHeaderStruct.size + movedIndex * common.PlayerStruct.size;
           const view = new DataView(buffer, offset, common.PlayerStruct.size);
           common.PlayerStruct.id.write(view, player.id);

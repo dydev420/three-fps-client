@@ -108,6 +108,7 @@ export enum MessageKind {
   PlayerLeft,
   PlayerMoved,
   PlayerMoving,
+  PlayerTurning,
 }
 
 export const PingPongStruct = (() => {
@@ -150,6 +151,15 @@ export const PlayerMovingStruct = (() => {
   const size = allocator.iota;
   const verify = verifier(kind, MessageKind.PlayerMoving, size);
   return { kind, direction, start, size, verify }
+})()
+
+export const PlayerTurningStruct = (() => {
+  const allocator = { iota: 0 };
+  const kind = allocUint8Field(allocator);
+  const direction = allocFloat32Field(allocator);
+  const size = allocator.iota;
+  const verify = verifier(kind, MessageKind.PlayerTurning, size);
+  return { kind, direction, size, verify }
 })()
 
 export const PlayerStruct = (() => {

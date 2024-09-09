@@ -16,10 +16,20 @@ export const DIRECTION_KEYS: {[key: string]: common.Moving} = {
   KeyS: common.Moving.MovingBackward,
 };
 
+export let mouseState: { mouseXDelta: number, mouseYDelta: number } = {
+  mouseXDelta: 0,
+  mouseYDelta: 0,
+};
+
+let pointerLocked: boolean  = false; 
+
+
 /**
  * Input Handlers
  */
 export function addInputListeners(game: Game) {
+  const canvas: HTMLCanvasElement = document.querySelector('body > canvas') as HTMLCanvasElement;
+
   window.addEventListener('keydown', (e) => {
     if(game.me === undefined || game.ws === undefined) {
       return;
@@ -51,5 +61,40 @@ export function addInputListeners(game: Game) {
         game.ws.send(view);
       }
     }
+  });
+
+  window.addEventListener('mousemove', (e: MouseEvent) => {
+    if(!pointerLocked) {
+      return;
+    }
+
+    const mouseXDelta = e.movementX;
+
+    if(game.me === undefined || game.ws === undefined) {
+      return;
+    }
+
+    // For rotation/camera action, use client authority.
+    // update client rotation first before sending network data about rotation
+    const dx = mouseXDelta/1000
+    console.log('Mouse dx', mouseXDelta/1000);
+    game.me.direction += dx;
+    
+    const view = new DataView(new ArrayBuffer(common.PlayerTurningStruct.size));
+    common.PlayerTurningStruct.kind.write(view, common.MessageKind.PlayerTurning);
+    common.PlayerTurningStruct.direction.write(view, game.me.direction);
+    game.ws.send(view);
+  });
+
+  // Pointer lock on canvas
+  canvas.addEventListener('click', async (e: MouseEvent) => {
+    await canvas.requestPointerLock();
+  });
+
+  document.addEventListener('pointerlockchange', async () => {
+    if (document.pointerLockElement)
+      pointerLocked = true;
+    else 
+      pointerLocked = false;
   });
 }
