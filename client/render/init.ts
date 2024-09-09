@@ -15,6 +15,10 @@ import GeneralLoader from './loaders/generalLoader';
 import InitRapier from './physics/RAPIER'
 import { PhysicsObject } from './physics/physics'
 import { GRAVITY } from './physics/utils/constants'
+import { createGame, type Game } from '../game'
+import PawnManager from './pawn/PawnManager';
+import DebugManager from '../debug/DebugManager'
+
 
 let scene: THREE.Scene,
   camera: THREE.PerspectiveCamera,
@@ -32,7 +36,10 @@ let scene: THREE.Scene,
   generalLoader: GeneralLoader,
   RAPIER: typeof Rapier,
   physicsWorld: Rapier.World,
-  physicsObjects: Array<PhysicsObject>
+  physicsObjects: Array<PhysicsObject>,
+  game: Game,
+  pawnManager: PawnManager,
+  debugManager: DebugManager;
 
 const renderTickManager = new TickManager()
 
@@ -98,7 +105,16 @@ export const initEngine = async () => {
 
   // controls
   const capsule = _addCapsule(1.5, 0.5, 10, 10)
-  controls = new AvatarController(capsule, camera)
+
+  console.log('Game', game);
+  
+  // Multiplayer client
+  game = createGame();
+  pawnManager = new PawnManager(game, camera);
+  debugManager = new DebugManager(scene, game, false);
+
+  // advanced controls
+  controls = new AvatarController(capsule, camera, game);
 
   // config
   // generalLoader = new GeneralLoader()
@@ -126,6 +142,11 @@ export const useRenderTarget = () => renderTarget
 export const useComposer = () => composer
 
 export const useGui = () => gui
+
+// Multiplayer states and sync helper
+export const useGame = () => game
+export const usePawnManager = () => pawnManager
+export const useDebugManager = () => debugManager
 
 export const addPass = (pass: Pass) => {
   composer.addPass(pass)

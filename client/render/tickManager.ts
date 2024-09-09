@@ -2,11 +2,15 @@ import * as THREE from 'three'
 import {
   useComposer,
   useControls,
+  useDebugManager,
+  useGame,
+  usePawnManager,
   usePhysics,
   usePhysicsObjects,
   useRenderer,
   useStats,
 } from './init'
+import { addInputListeners } from '../gameInput'
 
 // animation params
 type Frame = XRFrame | null
@@ -57,6 +61,9 @@ class TickManager extends EventTarget {
     const physicsObjects = usePhysicsObjects()
     const controls = useControls()
     const stats = useStats()
+    const game = useGame()
+    const pawnManager = usePawnManager();
+    const debugManager = useDebugManager();
 
     if (!renderer) {
       throw new Error('Updating Frame Failed : Uninitialized Renderer')
@@ -91,7 +98,13 @@ class TickManager extends EventTarget {
       this.fps = 1000 / this.deltaTime
       this.lastTimestamp = this.timestamp
 
-      controls.update(timestamp / 1000, deltaTimeCapped / 1000)
+      // controls.update(timestamp / 1000, deltaTimeCapped / 1000);
+
+      // Sync multiplayer objects
+      pawnManager.update(deltaTimeCapped / 1000);
+
+      // Debug player boxes
+      debugManager.update(deltaTimeCapped / 1000);
 
       composer.render()
       // renderer.render(scene, camera);
@@ -99,9 +112,9 @@ class TickManager extends EventTarget {
       this.tick(timestamp, deltaTimeCapped, this.fps, frame)
 
       stats.update()
-
-      // performance tracker end
     }
+
+    addInputListeners(game);
 
     renderer.setAnimationLoop(animate)
   }
