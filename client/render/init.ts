@@ -45,6 +45,7 @@ const renderTickManager = new TickManager()
 
 export const initEngine = async () => {
   // physics -> Rapier
+  // @ts-ignore
   RAPIER = await InitRapier()
   physicsWorld = new RAPIER.World(GRAVITY)
   physicsObjects = [] // initializing physics objects array

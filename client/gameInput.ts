@@ -77,7 +77,6 @@ export function addInputListeners(game: Game) {
     // For rotation/camera action, use client authority.
     // update client rotation first before sending network data about rotation
     const dx = mouseXDelta/1000
-    console.log('Mouse dx', mouseXDelta/1000);
     game.me.direction += dx;
     
     const view = new DataView(new ArrayBuffer(common.PlayerTurningStruct.size));
