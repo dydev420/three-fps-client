@@ -21,6 +21,7 @@ import { addPhysics } from './render/physics/physics'
 
 
 import { TickData } from './render/tickManager';
+import { WORLD_HEIGHT, WORLD_WIDTH } from '../server/common.mts'
 
 const MOTION_BLUR_AMOUNT = 0.5
 
@@ -56,9 +57,11 @@ const startApp = async () => {
     const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight)
     const material = new THREE.MeshPhysicalMaterial({
       color: '#333',
-      side: THREE.DoubleSide
+      side: THREE.DoubleSide,
+      // wireframe: true,
     })
-    const plane = new THREE.Mesh(geometry, material)
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.y -= 1.5;
 
     // * Physics
     const collider = addPhysics(
@@ -84,7 +87,7 @@ const startApp = async () => {
 
   const _addCubeMesh = (pos: THREE.Vector3) => {
     // * Settings
-    const size = 6
+    const size = 1;
 
     // * Mesh
     const geometry = new THREE.BoxGeometry(size, size, size)
@@ -108,10 +111,11 @@ const startApp = async () => {
     scene.add(cube)
   }
 
-  const NUM_CUBES = 10
+  const NUM_CUBES = 20
+  // const NUM_CUBES = 0
   for (let i = 0; i < NUM_CUBES; i++) {
     _addCubeMesh(
-      new THREE.Vector3((Math.random() - 0.5) * 20, 10 + i * 5, (Math.random() - 0.5) * 20)
+      new THREE.Vector3((Math.random() - 0.5) * WORLD_WIDTH, 10 + i * 5, (Math.random() - 0.5) * WORLD_HEIGHT)
     )
   }
 

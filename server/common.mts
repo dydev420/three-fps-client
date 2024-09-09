@@ -3,10 +3,10 @@ import { Vector2, Vector3 } from "./lib/vector.mjs";
 
 export const SERVER_PORT = 6970;
 export const SERVER_FPS = 60;
-export const WORLD_WIDTH = 800;
-export const WORLD_HEIGHT = 600;
-export const PLAYER_SIZE = 30;
-export const PLAYER_SPEED = 500;
+export const WORLD_WIDTH = 8 * 100 * 0.1;
+export const WORLD_HEIGHT = 6 * 100 * 0.1;
+export const PLAYER_SIZE = 30 * 0.5;
+export const PLAYER_SPEED = 20;
 
 export function properMod(a: number, b: number) {
   return (a % b + b) % b;
@@ -224,17 +224,21 @@ export function updatePlayer(player: Player, deltaTime: number) {
   }
   player.direction = player.direction + angularVelocity*deltaTime;
   player.position.add(controlVelocity.scale(deltaTime));
-  
-  // Wrap Around (Not needed for FPS, only for 2D)
-  player.position.x = properMod(player.position.x, WORLD_WIDTH);
-  player.position.y = properMod(player.position.y, WORLD_HEIGHT);
+}
 
-  // const nx = player.position.x + player.controlVelocity.x*deltaTime;
-  // if (sceneCanRectangleFitHere(scene, nx, player.position.y, MINIMAP_PLAYER_SIZE, MINIMAP_PLAYER_SIZE)) {
-  //     player.position.x = nx;
-  // }
-  // const ny = player.position.y + player.controlVelocity.y*deltaTime;
-  // if (sceneCanRectangleFitHere(scene, player.position.x, ny, MINIMAP_PLAYER_SIZE, MINIMAP_PLAYER_SIZE)) {
-  //     player.position.y = ny;
-  // }
+export function getPolarRotation(player: Player) {
+  const center = player.position.clone();
+  const end = new Vector2().setPolar(player.direction, PLAYER_SIZE).add(center);
+
+  return [center, end];
+}
+
+export function getForwardDir(player: Player) {
+  const [center, end] = getPolarRotation(player);
+
+  return end.clone().sub(center).norm();
+}
+
+export function vec3D(vec2: Vector2): Vector3 {
+  return new Vector3(vec2.x, 0, vec2.y);
 }
