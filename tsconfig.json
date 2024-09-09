@@ -18,6 +18,8 @@
     // "noUnusedLocals": true,
     // "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
+    
   },
-  "include": ["client", "server", "vite.config.ts"]
+  "include": ["client", "server", "vite.config.ts"],
+  "exclude": ["etc"],
 }
