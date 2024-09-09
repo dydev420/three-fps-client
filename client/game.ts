@@ -12,7 +12,8 @@ export interface Game {
 }
 
 export function createGame(): Game {
-  const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
+  // const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
+  const ws = new WebSocket(`wss://${window.location.hostname}:${common.SERVER_PORT}`);
   ws.binaryType = 'arraybuffer';
   const players = new Map();
 

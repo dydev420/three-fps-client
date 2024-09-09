@@ -1,4 +1,11 @@
 runtime: nodejs20
 
+handlers:
+# - url: /
+#   script: dist/index.html
+  
+- url: /dist
+  static_dir: dist
+
 env_variables:
   WS_PORT: 6970
