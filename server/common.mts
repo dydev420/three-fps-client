@@ -2,7 +2,7 @@ import * as ws from "ws";
 import { Vector2, Vector3 } from "./lib/vector.mjs";
 
 export const SERVER_PORT = 6969;
-export const SERVER_FPS = 60;
+export const SERVER_FPS = 120;
 export const WORLD_WIDTH = 8 * 100 * 0.1;
 export const WORLD_HEIGHT = 6 * 100 * 0.1;
 export const PLAYER_SIZE = 30 * 0.5;
