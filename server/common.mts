@@ -8,6 +8,14 @@ export const WORLD_HEIGHT = 6 * 100 * 0.1;
 export const PLAYER_SIZE = 30 * 0.5;
 export const PLAYER_SPEED = 20;
 
+export const getConnectionUrl = (url: URL) => {
+  let { protocol, hostname, port } = url;
+  
+  return 'ws://'
+    + hostname
+    + (port ? `:${port}` : '');
+}
+
 export function properMod(a: number, b: number) {
   return (a % b + b) % b;
 }
