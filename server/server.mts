@@ -8,12 +8,15 @@ import app from "./app.mts";
 
 
 // init express server to serve html
-app.listen(process.env.PORT, () => console.log('Express Server Started on PORT:', process.env.PORT));
+const httpServer = app.listen(process.env.PORT, () => console.log('Express Server Started on PORT:', process.env.PORT));
 
 // init WebSocket server for multiplayer connections
 const wss = new WebSocketServer({
-  port: common.SERVER_PORT as number,
+  // port: common.SERVER_PORT as number,
+  server: httpServer,
 });
+
+console.log(`Listening on ws://localhost:${common.SERVER_PORT}`);
 
 /**
  * Multiplayer Websocket server
@@ -383,5 +386,3 @@ setTimeout(() => {
   previousTimestamp = Date.now();
   tick();
 }, 1000/common.SERVER_FPS);
-
-console.log(`Listening on ws://localhost:${common.SERVER_PORT}`);
