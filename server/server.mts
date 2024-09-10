@@ -16,7 +16,7 @@ const wss = new WebSocketServer({
   server: httpServer,
 });
 
-console.log(`Listening on ws://localhost:${common.SERVER_PORT}`);
+console.log(`Listening on wss://localhost:${common.SERVER_PORT}`);
 
 /**
  * Multiplayer Websocket server
