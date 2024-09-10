@@ -66,7 +66,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
    * WebSocket
    */
   // const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
-  const ws = new WebSocket(`wss://${window.location.hostname}:${common.SERVER_PORT}`);
+  const ws = new WebSocket(`wss://${window.location.hostname}`);
   ws.binaryType = 'arraybuffer';
  
   ws.addEventListener('open', (event) => {
