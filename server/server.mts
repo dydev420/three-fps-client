@@ -318,6 +318,8 @@ const tick = () => {
         } else if (player.turned && player.newDirection !== player.direction) {
           player.direction = player.newDirection;
           moved = true;
+        } else if (player.turned) {
+          player.turned = false;
         }
     
         if (moved){
