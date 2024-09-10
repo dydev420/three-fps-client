@@ -63,7 +63,7 @@ class MyPlayer implements Character {
     this.camera.lookAt(cameraTarget);
   }
 
-  updatePosition(deltaTime: number) {    
+  updatePosition(deltaTime: number) {
     if(this.player) {      
       common.updatePlayer(this.player, deltaTime);
       this.position.x = this.player.position.x;

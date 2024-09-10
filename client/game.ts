@@ -82,9 +82,6 @@ export function createGame(): Game {
             });
           } 
         }
-      } else if (common.PlayerLeftStruct.verify(view)) {
-        players.delete(common.PlayerLeftStruct.id.read(view));
-        console.log('Payer Left -- id:', common.PlayerLeftStruct.id.read(view));
       } else if (common.BatchHeaderStruct.verifyMoved(view)) {
         const count = common.BatchHeaderStruct.count.read(view);
 
@@ -103,6 +100,9 @@ export function createGame(): Game {
           player.position.x = common.PlayerStruct.x.read(playerView);
           player.position.y = common.PlayerStruct.y.read(playerView);
         }
+      } else if (common.PlayerLeftStruct.verify(view)) {
+        players.delete(common.PlayerLeftStruct.id.read(view));
+        console.log('Payer Left -- id:', common.PlayerLeftStruct.id.read(view));
       } else if (common.PingPongStruct.verifyPong(view)) {
           game.ping = performance.now() - common.PingPongStruct.timestamp.read(view);
       } else {

@@ -87,7 +87,7 @@ export function addInputListeners(game: Game) {
 
   // Pointer lock on canvas
   canvas.addEventListener('click', async (e: MouseEvent) => {
-    await canvas.requestPointerLock();
+    canvas.requestPointerLock();
   });
 
   document.addEventListener('pointerlockchange', async () => {
