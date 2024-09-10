@@ -1,4 +1,3 @@
-// require('dotenv').config();
 import 'dotenv/config';
 
 import { WebSocketServer, WebSocket } from "ws";
@@ -8,9 +7,13 @@ import type { Player } from "./common.mjs";
 import app from "./app.mts";
 
 
-
 // init express server to serve html
 app.listen(process.env.PORT, () => console.log('Express Server Started on PORT:', process.env.PORT));
+
+// init WebSocket server for multiplayer connections
+const wss = new WebSocketServer({
+  port: common.SERVER_PORT as number,
+});
 
 /**
  * Multiplayer Websocket server
@@ -108,10 +111,6 @@ let messagesReceivedWithinTick = 0;
 const joinedIds = new Set<number>();
 const leftIds = new Set<number>();
 const pingIds = new Map<number, number>();
-
-const wss = new WebSocketServer({
-  port: common.SERVER_PORT,
-});
 
 const randomHue = () => {
   return Math.floor(Math.random() * 360);
