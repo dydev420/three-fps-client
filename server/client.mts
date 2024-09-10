@@ -211,7 +211,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
   
       // Send Ping to server
       pingCoolDown -= 1;
-      if (ws && pingCoolDown <= 0) {
+      if (ws?.readyState && pingCoolDown <= 0) {
         const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
         common.PingPongStruct.kind.write(view, common.MessageKind.Ping);
         common.PingPongStruct.timestamp.write(view, performance.now());
