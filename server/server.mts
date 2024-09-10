@@ -301,6 +301,8 @@ const tick = () => {
           || (player.turned && player.newDirection !== player.direction)
         ) {
         movedCount++;
+      } else if (player.turned) {
+        player.turned = false;
       }
     });
     if (movedCount) {
@@ -318,8 +320,6 @@ const tick = () => {
         } else if (player.turned && player.newDirection !== player.direction) {
           player.direction = player.newDirection;
           moved = true;
-        } else if (player.turned) {
-          player.turned = false;
         }
     
         if (moved){
