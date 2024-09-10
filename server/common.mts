@@ -10,10 +10,17 @@ export const PLAYER_SPEED = 20;
 
 export const getConnectionUrl = (url: URL) => {
   let { protocol, hostname, port } = url;
-  
-  return 'ws://'
+  let wsProtocol = 'ws:'
+
+  // use wss for secure http connections
+  if(protocol === 'https:') {
+    wsProtocol = 'wss:';
+  }
+
+  return wsProtocol
+    + '//'
     + hostname
-    + (port ? `:${port}` : '');
+    + (port?.length ? `:${port}` : '');
 }
 
 export function properMod(a: number, b: number) {
