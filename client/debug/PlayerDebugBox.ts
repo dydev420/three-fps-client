@@ -77,6 +77,17 @@ class PlayerDebugBox implements DebugBox {
       this.updateArrow(this.player, scene);    
     }
   };
+
+  delete(scene: THREE.Scene): void {
+    this.geometry.dispose();
+    this.material.dispose();
+    scene.remove(this.mesh);
+
+    if(this.arrow) {
+      this.arrow.dispose();
+      scene.remove(this.arrow);
+    }
+  };
 }
 
 export default PlayerDebugBox;

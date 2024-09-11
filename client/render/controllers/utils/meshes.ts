@@ -21,4 +21,13 @@ const _addCapsule = (
   return capsule
 }
 
-export { _addCapsule }
+const _removeCapsule = (mesh : THREE.Mesh) => {
+  const scene = useScene()
+ 
+  // TODO: dispose other mesh components too
+  mesh.geometry.dispose();
+
+  scene.remove(mesh);
+}
+
+export { _addCapsule, _removeCapsule }

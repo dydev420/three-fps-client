@@ -29,6 +29,14 @@ class PawnManager {
           this.updateMyPawn(deltaTime)
         }
       });
+
+      // Remove disconnected pawns
+      this.pawns.forEach((pawn, pawnId) => {
+        if(!this.game.players.has(pawnId)) {
+          pawn.delete();
+          this.pawns.delete(pawnId);
+        }
+      });
     }
   }
 

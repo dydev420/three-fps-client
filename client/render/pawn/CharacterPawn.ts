@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Vector3 } from "three";
 import { addPhysics, PhysicsObject } from '../physics/physics';
-import { _addCapsule } from '../controllers/utils/meshes';
+import { _addCapsule, _removeCapsule } from '../controllers/utils/meshes';
 import { _calculateObjectSize } from '../controllers/utils/objects';
 
 class CharacterPawn extends THREE.Mesh {
@@ -46,6 +46,10 @@ class CharacterPawn extends THREE.Mesh {
     this.position.copy(position);
     // copy position state to capsule mesh
     this.updateCapsule();
+  }
+
+  delete() {
+    _removeCapsule(this.capsule);
   }
 }
 

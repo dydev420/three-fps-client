@@ -35,6 +35,14 @@ class DebugManager {
         playerBox.update(this.scene, deltaTime);
       });
     }
+
+    // Remove disconnected Boxes
+    this.playerBoxes.forEach((box, boxId) => {
+      if(!this.game.players.has(boxId)) {
+        box.delete(this.scene);
+        this.playerBoxes.delete(boxId);
+      }
+    });
   }
 }
 

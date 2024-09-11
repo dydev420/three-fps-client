@@ -39,6 +39,10 @@ class OnlinePlayer implements Character {
       this.pawn.setPosition(this.position);
     }
   }
+
+  delete() {
+    this.pawn.delete();
+  }
 }
 
 export default OnlinePlayer;

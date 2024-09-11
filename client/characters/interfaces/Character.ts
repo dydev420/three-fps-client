@@ -11,6 +11,7 @@ interface Character {
   player: Player | undefined;
 
   update: (deltaTime: number) => void;
+  delete: () => void;
 }
 
 export default Character;
