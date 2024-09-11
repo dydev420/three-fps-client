@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "server": "tsx watch ./server/server.mts",
+    "bots": "tsx watch ./server/bot.mts",
     "tsc": "tsc",
     "start": "tsx ./server/server.mts"
   },
