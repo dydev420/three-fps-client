@@ -17,6 +17,13 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         server: resolve(__dirname, 'server/index.html'),
       },
+      output: {
+        manualChunks: (id) => {
+          if (id.includes('node_modules')) {
+            return 'vendor';
+          }
+        }
+      }
     },
   },
 } satisfies UserConfig);
