@@ -22,6 +22,10 @@ export default defineConfig({
           if (id.includes('node_modules')) {
             return 'vendor';
           }
+
+          if (id.includes('common')) {
+            return 'common';
+          }
         }
       }
     },
