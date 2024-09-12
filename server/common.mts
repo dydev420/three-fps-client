@@ -63,10 +63,10 @@ const UINT16_SIZE = 2;
 const UINT32_SIZE = 4;
 const FLOAT32_SIZE = 4;
 
-function allocUint8Field(allocator: { iota: number }): Field {
-  const offset = allocator.iota;
+function allocUint8Field(allocator: { size: number }): Field {
+  const offset = allocator.size;
   const size = UINT8_SIZE;
-  allocator.iota += size;
+  allocator.size += size;
   return {
     offset,
     size,
@@ -75,10 +75,10 @@ function allocUint8Field(allocator: { iota: number }): Field {
   };
 }
 
-function allocUint16Field(allocator: { iota: number }): Field {
-  const offset = allocator.iota;
+function allocUint16Field(allocator: { size: number }): Field {
+  const offset = allocator.size;
   const size = UINT16_SIZE;
-  allocator.iota += size;
+  allocator.size += size;
   return {
     offset,
     size,
@@ -87,10 +87,10 @@ function allocUint16Field(allocator: { iota: number }): Field {
   };
 }
 
-function allocUint32Field(allocator: { iota: number }): Field {
-  const offset = allocator.iota;
+function allocUint32Field(allocator: { size: number }): Field {
+  const offset = allocator.size;
   const size = UINT32_SIZE;
-  allocator.iota += size;
+  allocator.size += size;
   return {
     offset,
     size,
@@ -99,10 +99,10 @@ function allocUint32Field(allocator: { iota: number }): Field {
   };
 }
 
-function allocFloat32Field(allocator: { iota: number }): Field {
-  const offset = allocator.iota;
+function allocFloat32Field(allocator: { size: number }): Field {
+  const offset = allocator.size;
   const size = FLOAT32_SIZE;
-  allocator.iota += size;
+  allocator.size += size;
   return {
     offset,
     size,
@@ -112,8 +112,32 @@ function allocFloat32Field(allocator: { iota: number }): Field {
 }
 
 function verifier(kindField: Field, kind: number, size: number ): (view: DataView) => boolean {
-  return (view) => view.byteLength === size && kindField.read(view) === kind;
+  return (view: DataView) => view.byteLength === size && kindField.read(view) === kind;
 } 
+
+function structWriter(fields: {[key: string]: Field}) {
+  return (view : DataView, props: {[key: string]: number}) => {
+    for (const [key, value] of Object.entries(props)) {
+      if(fields[key]) {
+        fields[key].write(view, props[key]);
+      }
+    }
+  };
+}
+
+function structReader(fields: {[key: string]: Field}) {
+  return (view : DataView,) => {
+    const props: {[x: string]: number | undefined} = {};
+    for (const key of Object.keys(fields)) {
+      if(fields[key]) {
+        props[key] = fields[key].read(view);
+      } else {
+        props[key] = undefined;
+      }
+    }
+    return props;
+  };
+}
 
 export enum MessageKind {
   Ping,
@@ -127,73 +151,83 @@ export enum MessageKind {
 }
 
 export const PingPongStruct = (() => {
-  const allocator = { iota: 0 };
-  const kind = allocUint8Field(allocator);
-  const timestamp = allocUint32Field(allocator);
-  const size = allocator.iota;
-  const verifyPing = verifier(kind, MessageKind.Ping, size);
-  const verifyPong = verifier(kind, MessageKind.Pong, size);
-  return { kind, timestamp, size, verifyPing, verifyPong };
+  const allocator = { size: 0 };
+  const fields = {
+    kind : allocUint8Field(allocator),
+    timestamp : allocUint32Field(allocator),
+  };
+  type PingPongFields = keyof typeof fields;  
+  const helpers = {
+    verifyPing: verifier(fields.kind, MessageKind.Ping, allocator.size),
+    verifyPong: verifier(fields.kind, MessageKind.Pong, allocator.size),
+    write: structWriter(fields) as (view : DataView, props: {[key in PingPongFields]: number}) => void,
+    read: structReader(fields) as (view : DataView) => {[key in PingPongFields]: number},
+  };
+  return {
+    ...fields,
+    ...helpers,
+    size: allocator.size,
+  };
 })();
 
 export const HelloStruct = (() => {
-  const allocator = { iota: 0 };
+  const allocator = { size: 0 };
   const kind = allocUint8Field(allocator);
   const id = allocUint32Field(allocator);
   const x = allocFloat32Field(allocator);
   const y = allocFloat32Field(allocator);
   const direction = allocFloat32Field(allocator);
   const hue = allocUint8Field(allocator);
-  const size = allocator.iota;
+  const size = allocator.size;
   const verify = verifier(kind, MessageKind.Hello, size);
   return { kind, id, x, y, direction, hue, size, verify };
 })();
 
 export const PlayerLeftStruct = (() => {
-  const allocator = { iota: 0 };
+  const allocator = { size: 0 };
   const kind = allocUint8Field(allocator);
   const id = allocUint32Field(allocator);
-  const size = allocator.iota;
+  const size = allocator.size;
   const verify = verifier(kind, MessageKind.PlayerLeft, size);
   return { kind, id, size, verify };
 })();
 
 export const PlayerMovingStruct = (() => {
-  const allocator = { iota: 0 };
+  const allocator = { size: 0 };
   const kind = allocUint8Field(allocator);
   const direction = allocUint8Field(allocator);
   const start = allocUint8Field(allocator);
-  const size = allocator.iota;
+  const size = allocator.size;
   const verify = verifier(kind, MessageKind.PlayerMoving, size);
   return { kind, direction, start, size, verify }
 })()
 
 export const PlayerTurningStruct = (() => {
-  const allocator = { iota: 0 };
+  const allocator = { size: 0 };
   const kind = allocUint8Field(allocator);
   const direction = allocFloat32Field(allocator);
-  const size = allocator.iota;
+  const size = allocator.size;
   const verify = verifier(kind, MessageKind.PlayerTurning, size);
   return { kind, direction, size, verify }
 })()
 
 export const PlayerStruct = (() => {
-  const allocator = { iota: 0 };
+  const allocator = { size: 0 };
   const id = allocUint32Field(allocator);
   const x = allocFloat32Field(allocator);
   const y = allocFloat32Field(allocator);
   const hue = allocUint8Field(allocator);
   const direction = allocFloat32Field(allocator);
   const moving = allocUint8Field(allocator);
-  const size = allocator.iota;
+  const size = allocator.size;
   return { id, x, y, hue, direction, moving, size };
 })();
 
 export const BatchHeaderStruct = (() => {
-  const allocator = { iota: 0 };
+  const allocator = { size: 0 };
   const kind = allocUint8Field(allocator);
   const count = allocUint16Field(allocator);
-  const size = allocator.iota;
+  const size = allocator.size;
   const verifyMoved = (view: DataView) => {
     return view.byteLength >= size
       && (view.byteLength - size) % PlayerStruct.size === 0

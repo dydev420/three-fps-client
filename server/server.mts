@@ -349,8 +349,10 @@ const tick = () => {
     const player = players.get(id);
     if (player !== undefined) {
       const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
-      common.PingPongStruct.kind.write(view, common.MessageKind.Pong);
-      common.PingPongStruct.timestamp.write(view, timestamp);
+      common.PingPongStruct.write(view, {
+        timestamp,
+        kind: common.MessageKind.Pong,
+      });
       player.ws.send(view);
     }
   });

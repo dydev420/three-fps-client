@@ -214,8 +214,10 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       pingCoolDown -= 1;
       if (ws?.readyState && pingCoolDown <= 0) {
         const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
-        common.PingPongStruct.kind.write(view, common.MessageKind.Ping);
-        common.PingPongStruct.timestamp.write(view, performance.now());
+        common.PingPongStruct.write(view, {
+          kind: common.MessageKind.Ping,
+          timestamp: performance.now(),
+        });
         ws.send(view);
   
         pingCoolDown = PING_COOL_DOWN;
