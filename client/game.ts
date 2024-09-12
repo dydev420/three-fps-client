@@ -42,15 +42,16 @@ export function createGame(): Game {
     const view = new DataView(event.data);
     if (game.me === undefined) {
       if (HelloStruct.verify(view)) {
+        const helloMessage = HelloStruct.read(view);
         game.me = {
-          id: HelloStruct.id.read(view),
-          position: new Vector2(
-            HelloStruct.x.read(view),
-            HelloStruct.y.read(view),
-          ),
-          hue: HelloStruct.hue.read(view)/256*360,
           moving: 0,
-          direction: HelloStruct.direction.read(view),
+          id: helloMessage.id,
+          hue: helloMessage.hue/256*360,
+          direction: helloMessage.direction,
+          position: new Vector2(
+            helloMessage.x,
+            helloMessage.y,
+          ),
         };
         players.set(game.me.id, game.me);
         console.log('Connected Players', game.me);

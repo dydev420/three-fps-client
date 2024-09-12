@@ -43,15 +43,16 @@ function createBot(): Bot {
     const view = new DataView(event.data);
     if (bot.me === undefined) {
       if (HelloStruct.verify(view)) {
+        const helloMessage = HelloStruct.read(view);
         bot.me = {
-          id: HelloStruct.id.read(view),
-          position: new Vector2(
-            HelloStruct.x.read(view),
-            HelloStruct.y.read(view)
-          ),
-          hue: HelloStruct.hue.read(view)/256*360,
           moving: 0,
-          direction: 0,
+          id: helloMessage.id,
+          hue: helloMessage.hue/256*360,
+          direction: helloMessage.direction,
+          position: new Vector2(
+            helloMessage.x,
+            helloMessage.y,
+          ),
         };
         // Start bot loop
         turn();

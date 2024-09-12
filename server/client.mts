@@ -91,15 +91,16 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       if (event.data instanceof ArrayBuffer) {
         const view = new DataView(event.data);
         if (HelloStruct.verify(view)) {
+          const helloMessage = HelloStruct.read(view);
           me = {
-            id: HelloStruct.id.read(view),
-            position: new Vector2(
-              HelloStruct.x.read(view),
-              HelloStruct.y.read(view),
-            ),
-            hue: HelloStruct.hue.read(view)/256*360,
             moving: 0,
-            direction: HelloStruct.direction.read(view),
+            id: helloMessage.id,
+            hue: helloMessage.hue/256*360,
+            direction: helloMessage.direction,
+            position: new Vector2(
+              helloMessage.x,
+              helloMessage.y,
+            ),
           };
           players.set(me.id, me);
           console.log('Connected Players', me);

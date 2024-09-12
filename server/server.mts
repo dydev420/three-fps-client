@@ -239,12 +239,14 @@ const tick = () => {
       const joinedPlayer = players.get(playerId);
       if (joinedPlayer !== undefined) {
         const helloView = new DataView(new ArrayBuffer(HelloStruct.size));
-        HelloStruct.kind.write(helloView, MessageKind.Hello);
-        HelloStruct.id.write(helloView, joinedPlayer.id);
-        HelloStruct.x.write(helloView, joinedPlayer.position.x);
-        HelloStruct.y.write(helloView, joinedPlayer.position.y);
-        HelloStruct.direction.write(helloView, joinedPlayer.direction);
-        HelloStruct.hue.write(helloView, Math.floor(joinedPlayer.hue/360*256));
+        HelloStruct.write(helloView, {
+          kind: MessageKind.Hello,
+          id: joinedPlayer.id,
+          x: joinedPlayer.position.x,
+          y: joinedPlayer.position.y,
+          direction: joinedPlayer.direction,
+          hue: joinedPlayer.hue/360*256,
+        });
         
         // Hello
         joinedPlayer.ws.send(helloView);
