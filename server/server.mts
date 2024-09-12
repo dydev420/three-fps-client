@@ -222,12 +222,14 @@ const tick = () => {
     // Add existing players data to the message
     players.forEach((player) => {
       const playerView = new DataView(buffer, BatchHeaderStruct.size + playerIndex * PlayerStruct.size);
-      PlayerStruct.id.write(playerView, player.id);
-      PlayerStruct.x.write(playerView, player.position.x);
-      PlayerStruct.y.write(playerView, player.position.y);
-      PlayerStruct.direction.write(playerView, player.direction);
-      PlayerStruct.moving.write(playerView, player.moving);
-      PlayerStruct.hue.write(playerView, Math.floor(player.hue/360*256));
+      PlayerStruct.write(playerView, {
+        id: player.id,
+        x: player.position.x,
+        y: player.position.y,
+        direction: player.direction,
+        moving: player.moving,
+        hue: Math.floor(player.hue/360*256),
+      });
     
       playerIndex++;
     });
@@ -269,12 +271,14 @@ const tick = () => {
       const otherPlayer = players.get(playerId);
       if (otherPlayer !== undefined) {
         const playerView = new DataView(buffer, BatchHeaderStruct.size + playerIndex * PlayerStruct.size);
-        PlayerStruct.id.write(playerView, otherPlayer.id);
-        PlayerStruct.x.write(playerView, otherPlayer.position.x);
-        PlayerStruct.y.write(playerView, otherPlayer.position.y);
-        PlayerStruct.hue.write(playerView, Math.floor(otherPlayer.hue/360*256));
-        PlayerStruct.direction.write(playerView, otherPlayer.direction);
-        PlayerStruct.moving.write(playerView, otherPlayer.moving);
+        PlayerStruct.write(playerView, {
+          id: otherPlayer.id,
+          x: otherPlayer.position.x,
+          y: otherPlayer.position.y,
+          direction: otherPlayer.direction,
+          moving: otherPlayer.moving,
+          hue: Math.floor(otherPlayer.hue/360*256),
+        });
         
         playerIndex++;
       }
@@ -334,13 +338,15 @@ const tick = () => {
     
         if (moved){
           const offset = BatchHeaderStruct.size + movedIndex * PlayerStruct.size;
-          const view = new DataView(buffer, offset, PlayerStruct.size);
-          PlayerStruct.id.write(view, player.id);
-          PlayerStruct.x.write(view, player.position.x);
-          PlayerStruct.y.write(view, player.position.y);
-          PlayerStruct.direction.write(view, player.direction);
-          PlayerStruct.moving.write(view, player.moving);
-        
+          const playerView = new DataView(buffer, offset, PlayerStruct.size);
+          PlayerStruct.write(playerView, {
+            id: player.id,
+            x: player.position.x,
+            y: player.position.y,
+            direction: player.direction,
+            moving: player.moving,
+            hue: Math.floor(player.hue/360*256),
+          });
           movedIndex++;
         }
       });

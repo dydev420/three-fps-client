@@ -67,25 +67,24 @@ export function createGame(): Game {
           const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
           const playerView = new DataView(event.data, offset, PlayerStruct.size);
 
-          const playerId = PlayerStruct.id.read(playerView);
-          const player = players.get(playerId);
+          const playerMessage = PlayerStruct.read(playerView);
+          const playerId = playerMessage.id
+          const player: Player = players.get(playerId);
 
           if(player) {
-            player.position.x = PlayerStruct.x.read(playerView);
-            player.position.y = PlayerStruct.y.read(playerView);
-            player.hue = PlayerStruct.hue.read(playerView)/256*360;
-            player.direction = PlayerStruct.direction.read(playerView);
-            player.moving = PlayerStruct.moving.read(playerView);
+            player.position.x = playerMessage.x;
+            player.position.y = playerMessage.y;
+            player.hue = playerMessage.hue;
+            player.direction = playerMessage.direction;
+            player.moving = playerMessage.moving;
           } else {
-            const x = PlayerStruct.x.read(playerView);
-            const y = PlayerStruct.y.read(playerView);
             players.set(playerId, {
               id: playerId,
-              position: new Vector2(x, y),
-              direction: PlayerStruct.direction.read(playerView), // change this or BUGS
-              moving: PlayerStruct.moving.read(playerView),
-              hue: PlayerStruct.hue.read(playerView)/256*360,
-            });
+              position: new Vector2(playerMessage.x, playerMessage.y),
+              direction: playerMessage.direction, // change this or BUGS
+              moving: playerMessage.moving,
+              hue: playerMessage.hue/256*360,
+            } as Player);
           } 
         }
       } else if (BatchHeaderStruct.verifyMoved(view)) {
@@ -95,16 +94,17 @@ export function createGame(): Game {
           const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
           const playerView = new DataView(event.data, offset);
 
-          const playerId = PlayerStruct.id.read(playerView);
-          const player = players.get(playerId);
+          const playerMessage = PlayerStruct.read(playerView);
+          const playerId = playerMessage.id
+          const player: Player = players.get(playerId);
           if(!player) {
             console.log('Unknown player id:', playerId);
             return;
           }
-          player.moving = PlayerStruct.moving.read(playerView);
-          player.direction = PlayerStruct.direction.read(playerView);
-          player.position.x = PlayerStruct.x.read(playerView);
-          player.position.y = PlayerStruct.y.read(playerView);
+          player.moving = playerMessage.moving;
+          player.direction = playerMessage.direction;
+          player.position.x = playerMessage.x;
+          player.position.y = playerMessage.y;
         }
       } else if (PlayerLeftStruct.verify(view)) {
         players.delete(PlayerLeftStruct.id.read(view));

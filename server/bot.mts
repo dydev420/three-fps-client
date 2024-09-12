@@ -66,14 +66,14 @@ function createBot(): Bot {
         const count = BatchHeaderStruct.count.read(view);
         
         for (let i = 0; i < count ; i++) {
-          const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
-          const playerView = new DataView(event.data, offset);
-
-          const playerId = PlayerStruct.id.read(playerView);
+          const viewOffset = BatchHeaderStruct.size + i* PlayerStruct.size;
+          const playerView = new DataView(event.data, viewOffset);
+          const playerMessage = PlayerStruct.read(playerView);
+          const playerId = playerMessage.id;
           if(bot.me && playerId === bot.me.id)  {
-            bot.me.moving = PlayerStruct.moving.read(playerView);
-            bot.me.position.x = PlayerStruct.x.read(playerView);
-            bot.me.position.y = PlayerStruct.y.read(playerView);
+            bot.me.moving = playerMessage.moving;
+            bot.me.position.x = playerMessage.x;
+            bot.me.position.y = playerMessage.y;
           }
         }
       }

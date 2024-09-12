@@ -5,7 +5,6 @@ import { verifier, writer, reader } from "../helpers/structs";
 const PlayerStruct = (() => {
   const allocator = { size: 0 };
   const fields = {
-    kind: allocUint8Field(allocator),
     id: allocUint32Field(allocator),
     x: allocFloat32Field(allocator),
     y: allocFloat32Field(allocator),
