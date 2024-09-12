@@ -2,6 +2,7 @@
 import { Vector2 } from "../server/lib/vector.mts";
 import * as common from "../common/common.mts";
 import { Player } from "../common/types";
+import PingPongStruct from "../common/structs/PingPongStruct";
 
 export interface Game {
   // camera: 
@@ -103,8 +104,8 @@ export function createGame(): Game {
       } else if (common.PlayerLeftStruct.verify(view)) {
         players.delete(common.PlayerLeftStruct.id.read(view));
         console.log('Payer Left -- id:', common.PlayerLeftStruct.id.read(view));
-      } else if (common.PingPongStruct.verifyPong(view)) {
-          game.ping = performance.now() - common.PingPongStruct.timestamp.read(view);
+      } else if (PingPongStruct.verifyPong(view)) {
+          game.ping = performance.now() - PingPongStruct.timestamp.read(view);
       } else {
         console.log('Unexpected binary message');
         ws.close();

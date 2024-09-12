@@ -2,6 +2,7 @@ import { Vector2 } from './lib/vector.mjs';
 import * as common from '../common/common.mjs';
 import { WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SIZE } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
+import PingPongStruct from '../common/structs/PingPongStruct';
 
 const CANVAS_STRETCH = 10;
 
@@ -154,8 +155,8 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
             player.position.x = common.PlayerStruct.x.read(playerView);
             player.position.y = common.PlayerStruct.y.read(playerView);
           }
-        } else if (common.PingPongStruct.verifyPong(view)) {
-            ping = performance.now() - common.PingPongStruct.timestamp.read(view);
+        } else if (PingPongStruct.verifyPong(view)) {
+            ping = performance.now() - PingPongStruct.timestamp.read(view);
         } else {
           console.log('Unexpected binary message');
           ws?.close();
@@ -214,8 +215,8 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       // Send Ping to server
       pingCoolDown -= 1;
       if (ws?.readyState && pingCoolDown <= 0) {
-        const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
-        common.PingPongStruct.write(view, {
+        const view = new DataView(new ArrayBuffer(PingPongStruct.size));
+        PingPongStruct.write(view, {
           kind: MessageKind.Ping,
           timestamp: performance.now(),
         });

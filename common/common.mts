@@ -13,8 +13,8 @@ import {
 } from './helpers/allocators';
 import {
   verifier,
-  structWriter,
-  structReader,
+  writer,
+  reader,
 } from './helpers/structs';
 
 
@@ -45,25 +45,7 @@ export function applyDirectionMask(moving: number, dir: number, start: number = 
   return start ? moving|(1<<dir) : moving&~(1<<dir);
 }
 
-export const PingPongStruct = (() => {
-  const allocator = { size: 0 };
-  const fields = {
-    kind : allocUint8Field(allocator),
-    timestamp : allocUint32Field(allocator),
-  };
-  type PingPongFields = keyof typeof fields;  
-  const helpers = {
-    verifyPing: verifier(fields.kind, MessageKind.Ping, allocator.size),
-    verifyPong: verifier(fields.kind, MessageKind.Pong, allocator.size),
-    write: structWriter(fields) as (view : DataView, props: {[key in PingPongFields]: number}) => void,
-    read: structReader(fields) as (view : DataView) => {[key in PingPongFields]: number},
-  };
-  return {
-    ...fields,
-    ...helpers,
-    size: allocator.size,
-  };
-})();
+
 
 export const HelloStruct = (() => {
   const allocator = { size: 0 };

@@ -5,6 +5,7 @@ import { Vector2 } from "./lib/vector.mjs";
 import * as common from '../common/common.mjs';
 import { SERVER_PORT, SERVER_FPS, WORLD_WIDTH, WORLD_HEIGHT, } from '../common/helpers/constants';
 import { Player, MessageKind } from "../common/types";
+import PingPongStruct from '../common/structs/PingPongStruct';
 import app from "./app.mts";
 
 
@@ -166,8 +167,8 @@ wss.on('connection', (ws) => {
       } else if (common.PlayerTurningStruct.verify(view)) {
         player.newDirection = common.PlayerTurningStruct.direction.read(view);
         player.turned = true;
-      } else if (common.PingPongStruct.verifyPing(view)) {
-        pingIds.set(id, common.PingPongStruct.timestamp.read(view));
+      } else if (PingPongStruct.verifyPing(view)) {
+        pingIds.set(id, PingPongStruct.timestamp.read(view));
       } else {
           stats.rejectedMessages += 1;
           console.log('Received unexpected message type');
@@ -349,8 +350,8 @@ const tick = () => {
   pingIds.forEach((timestamp, id) => {
     const player = players.get(id);
     if (player !== undefined) {
-      const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
-      common.PingPongStruct.write(view, {
+      const view = new DataView(new ArrayBuffer(PingPongStruct.size));
+      PingPongStruct.write(view, {
         timestamp,
         kind: MessageKind.Pong,
       });
