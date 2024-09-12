@@ -4,6 +4,8 @@ import { Player, Moving, MessageKind } from "../common/types";
 
 // import { useGame } from "./render/init";
 import type { Game } from "./game";
+import PlayerMovingStruct from "../common/structs/PlayerMovingStruct";
+import PlayerTurningStruct from "../common/structs/PlayerTurningStruct";
 
 export const DIRECTION_KEYS: {[key: string]: Moving} = {
   ArrowLeft: Moving.TurningLeft,
@@ -37,10 +39,10 @@ export function addInputListeners(game: Game) {
     if (!e.repeat) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
-        const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        common.PlayerMovingStruct.start.write(view, 1);
-        common.PlayerMovingStruct.direction.write(view, direction);
+        const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
+        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
+        PlayerMovingStruct.start.write(view, 1);
+        PlayerMovingStruct.direction.write(view, direction);
         
         game.ws.send(view);
       }
@@ -54,10 +56,10 @@ export function addInputListeners(game: Game) {
       
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
-        const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        common.PlayerMovingStruct.start.write(view, 0);
-        common.PlayerMovingStruct.direction.write(view, direction);
+        const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
+        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
+        PlayerMovingStruct.start.write(view, 0);
+        PlayerMovingStruct.direction.write(view, direction);
         game.ws.send(view);
       }
     }
@@ -79,9 +81,9 @@ export function addInputListeners(game: Game) {
     const dx = mouseXDelta/1000
     game.me.direction += dx;
     
-    const view = new DataView(new ArrayBuffer(common.PlayerTurningStruct.size));
-    common.PlayerTurningStruct.kind.write(view, MessageKind.PlayerTurning);
-    common.PlayerTurningStruct.direction.write(view, game.me.direction);
+    const view = new DataView(new ArrayBuffer(PlayerTurningStruct.size));
+    PlayerTurningStruct.kind.write(view, MessageKind.PlayerTurning);
+    PlayerTurningStruct.direction.write(view, game.me.direction);
     game.ws.send(view);
   });
 

@@ -3,6 +3,10 @@ import { Vector2 } from "../server/lib/vector.mts";
 import * as common from "../common/common.mts";
 import { Player } from "../common/types";
 import PingPongStruct from "../common/structs/PingPongStruct";
+import HelloStruct from "../common/structs/HelloStruct";
+import BatchHeaderStruct from "../common/structs/HelloStruct copy";
+import PlayerStruct from "../common/structs/PlayerStruct";
+import PlayerLeftStruct from "../common/structs/PlayerLeftStruct";
 
 export interface Game {
   // camera: 
@@ -37,16 +41,16 @@ export function createGame(): Game {
   ws.addEventListener('message', async (event) => {
     const view = new DataView(event.data);
     if (game.me === undefined) {
-      if (common.HelloStruct.verify(view)) {
+      if (HelloStruct.verify(view)) {
         game.me = {
-          id: common.HelloStruct.id.read(view),
+          id: HelloStruct.id.read(view),
           position: new Vector2(
-            common.HelloStruct.x.read(view),
-            common.HelloStruct.y.read(view),
+            HelloStruct.x.read(view),
+            HelloStruct.y.read(view),
           ),
-          hue: common.HelloStruct.hue.read(view)/256*360,
+          hue: HelloStruct.hue.read(view)/256*360,
           moving: 0,
-          direction: common.HelloStruct.direction.read(view),
+          direction: HelloStruct.direction.read(view),
         };
         players.set(game.me.id, game.me);
         console.log('Connected Players', game.me);
@@ -55,55 +59,55 @@ export function createGame(): Game {
         ws.close();
       }
     } else {
-      if(common.BatchHeaderStruct.verifyJoined(view)) {
-        const count = common.BatchHeaderStruct.count.read(view);
+      if(BatchHeaderStruct.verifyJoined(view)) {
+        const count = BatchHeaderStruct.count.read(view);
 
         for (let i = 0; i < count ; i++) {
-          const offset = common.BatchHeaderStruct.size + i* common.PlayerStruct.size;
-          const playerView = new DataView(event.data, offset, common.PlayerStruct.size);
+          const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
+          const playerView = new DataView(event.data, offset, PlayerStruct.size);
 
-          const playerId = common.PlayerStruct.id.read(playerView);
+          const playerId = PlayerStruct.id.read(playerView);
           const player = players.get(playerId);
 
           if(player) {
-            player.position.x = common.PlayerStruct.x.read(playerView);
-            player.position.y = common.PlayerStruct.y.read(playerView);
-            player.hue = common.PlayerStruct.hue.read(playerView)/256*360;
-            player.direction = common.PlayerStruct.direction.read(playerView);
-            player.moving = common.PlayerStruct.moving.read(playerView);
+            player.position.x = PlayerStruct.x.read(playerView);
+            player.position.y = PlayerStruct.y.read(playerView);
+            player.hue = PlayerStruct.hue.read(playerView)/256*360;
+            player.direction = PlayerStruct.direction.read(playerView);
+            player.moving = PlayerStruct.moving.read(playerView);
           } else {
-            const x = common.PlayerStruct.x.read(playerView);
-            const y = common.PlayerStruct.y.read(playerView);
+            const x = PlayerStruct.x.read(playerView);
+            const y = PlayerStruct.y.read(playerView);
             players.set(playerId, {
               id: playerId,
               position: new Vector2(x, y),
-              direction: common.PlayerStruct.direction.read(playerView), // change this or BUGS
-              moving: common.PlayerStruct.moving.read(playerView),
-              hue: common.PlayerStruct.hue.read(playerView)/256*360,
+              direction: PlayerStruct.direction.read(playerView), // change this or BUGS
+              moving: PlayerStruct.moving.read(playerView),
+              hue: PlayerStruct.hue.read(playerView)/256*360,
             });
           } 
         }
-      } else if (common.BatchHeaderStruct.verifyMoved(view)) {
-        const count = common.BatchHeaderStruct.count.read(view);
+      } else if (BatchHeaderStruct.verifyMoved(view)) {
+        const count = BatchHeaderStruct.count.read(view);
 
         for (let i = 0; i < count ; i++) {
-          const offset = common.BatchHeaderStruct.size + i* common.PlayerStruct.size;
+          const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
           const playerView = new DataView(event.data, offset);
 
-          const playerId = common.PlayerStruct.id.read(playerView);
+          const playerId = PlayerStruct.id.read(playerView);
           const player = players.get(playerId);
           if(!player) {
             console.log('Unknown player id:', playerId);
             return;
           }
-          player.moving = common.PlayerStruct.moving.read(playerView);
-          player.direction = common.PlayerStruct.direction.read(playerView);
-          player.position.x = common.PlayerStruct.x.read(playerView);
-          player.position.y = common.PlayerStruct.y.read(playerView);
+          player.moving = PlayerStruct.moving.read(playerView);
+          player.direction = PlayerStruct.direction.read(playerView);
+          player.position.x = PlayerStruct.x.read(playerView);
+          player.position.y = PlayerStruct.y.read(playerView);
         }
-      } else if (common.PlayerLeftStruct.verify(view)) {
-        players.delete(common.PlayerLeftStruct.id.read(view));
-        console.log('Payer Left -- id:', common.PlayerLeftStruct.id.read(view));
+      } else if (PlayerLeftStruct.verify(view)) {
+        players.delete(PlayerLeftStruct.id.read(view));
+        console.log('Payer Left -- id:', PlayerLeftStruct.id.read(view));
       } else if (PingPongStruct.verifyPong(view)) {
           game.ping = performance.now() - PingPongStruct.timestamp.read(view);
       } else {

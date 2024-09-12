@@ -3,6 +3,10 @@ import * as common from '../common/common.mjs';
 import { SERVER_PORT, WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SPEED } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import { Vector2 } from "./lib/vector.mjs";
+import BatchHeaderStruct from "../common/structs/HelloStruct copy";
+import PlayerStruct from "../common/structs/PlayerStruct";
+import HelloStruct from "../common/structs/HelloStruct";
+import PlayerMovingStruct from "../common/structs/PlayerMovingStruct";
 
 // Set number of bots
 const TOTAL_BOTS = 20;
@@ -38,14 +42,14 @@ function createBot(): Bot {
 
     const view = new DataView(event.data);
     if (bot.me === undefined) {
-      if (common.HelloStruct.verify(view)) {
+      if (HelloStruct.verify(view)) {
         bot.me = {
-          id: common.HelloStruct.id.read(view),
+          id: HelloStruct.id.read(view),
           position: new Vector2(
-            common.HelloStruct.x.read(view),
-            common.HelloStruct.y.read(view)
+            HelloStruct.x.read(view),
+            HelloStruct.y.read(view)
           ),
-          hue: common.HelloStruct.hue.read(view)/256*360,
+          hue: HelloStruct.hue.read(view)/256*360,
           moving: 0,
           direction: 0,
         };
@@ -57,18 +61,18 @@ function createBot(): Bot {
           bot.ws.close();
         }
     } else {
-      if (common.BatchHeaderStruct.verifyMoved(view)) {
-        const count = common.BatchHeaderStruct.count.read(view);
+      if (BatchHeaderStruct.verifyMoved(view)) {
+        const count = BatchHeaderStruct.count.read(view);
         
         for (let i = 0; i < count ; i++) {
-          const offset = common.BatchHeaderStruct.size + i* common.PlayerStruct.size;
+          const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
           const playerView = new DataView(event.data, offset);
 
-          const playerId = common.PlayerStruct.id.read(playerView);
+          const playerId = PlayerStruct.id.read(playerView);
           if(bot.me && playerId === bot.me.id)  {
-            bot.me.moving = common.PlayerStruct.moving.read(playerView);
-            bot.me.position.x = common.PlayerStruct.x.read(playerView);
-            bot.me.position.y = common.PlayerStruct.y.read(playerView);
+            bot.me.moving = PlayerStruct.moving.read(playerView);
+            bot.me.position.x = PlayerStruct.x.read(playerView);
+            bot.me.position.y = PlayerStruct.y.read(playerView);
           }
         }
       }
@@ -103,14 +107,14 @@ function createBot(): Bot {
 
   function turn() {
     if (bot.me !== undefined) {
-      const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-      common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
+      const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
+      PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
 
       // Full stop
       for (let direction = 0; direction < Moving.Count; ++direction) {
         if ((bot.me.moving >> direction) & 1) {
-          common.PlayerMovingStruct.direction.write(view, direction);
-          common.PlayerMovingStruct.start.write(view, 0);
+          PlayerMovingStruct.direction.write(view, direction);
+          PlayerMovingStruct.start.write(view, 0);
           bot.ws.send(view);
         }
       }
@@ -120,8 +124,8 @@ function createBot(): Bot {
       bot.timeoutBeforeTurn = Math.random() * WORLD_WIDTH * 0.5 / PLAYER_SPEED;
 
       // Sync
-      common.PlayerMovingStruct.direction.write(view, direction);
-      common.PlayerMovingStruct.start.write(view, 1);
+      PlayerMovingStruct.direction.write(view, direction);
+      PlayerMovingStruct.start.write(view, 1);
       bot.ws.send(view);
     }
   }

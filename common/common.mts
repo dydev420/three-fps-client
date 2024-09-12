@@ -4,18 +4,7 @@ import { Player, Moving, Field, MessageKind,  } from './types';
 import {
   PLAYER_SIZE,
   PLAYER_SPEED,
-} from './helpers/constants' 
-import {
-  allocFloat32Field,
-  allocUint16Field,
-  allocUint32Field,
-  allocUint8Field
-} from './helpers/allocators';
-import {
-  verifier,
-  writer,
-  reader,
-} from './helpers/structs';
+} from './helpers/constants' ;
 
 
 export const getConnectionUrl = (url: URL) => {
@@ -45,78 +34,6 @@ export function applyDirectionMask(moving: number, dir: number, start: number = 
   return start ? moving|(1<<dir) : moving&~(1<<dir);
 }
 
-
-
-export const HelloStruct = (() => {
-  const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const id = allocUint32Field(allocator);
-  const x = allocFloat32Field(allocator);
-  const y = allocFloat32Field(allocator);
-  const direction = allocFloat32Field(allocator);
-  const hue = allocUint8Field(allocator);
-  const size = allocator.size;
-  const verify = verifier(kind, MessageKind.Hello, size);
-  return { kind, id, x, y, direction, hue, size, verify };
-})();
-
-export const PlayerLeftStruct = (() => {
-  const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const id = allocUint32Field(allocator);
-  const size = allocator.size;
-  const verify = verifier(kind, MessageKind.PlayerLeft, size);
-  return { kind, id, size, verify };
-})();
-
-export const PlayerMovingStruct = (() => {
-  const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const direction = allocUint8Field(allocator);
-  const start = allocUint8Field(allocator);
-  const size = allocator.size;
-  const verify = verifier(kind, MessageKind.PlayerMoving, size);
-  return { kind, direction, start, size, verify }
-})()
-
-export const PlayerTurningStruct = (() => {
-  const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const direction = allocFloat32Field(allocator);
-  const size = allocator.size;
-  const verify = verifier(kind, MessageKind.PlayerTurning, size);
-  return { kind, direction, size, verify }
-})()
-
-export const PlayerStruct = (() => {
-  const allocator = { size: 0 };
-  const id = allocUint32Field(allocator);
-  const x = allocFloat32Field(allocator);
-  const y = allocFloat32Field(allocator);
-  const hue = allocUint8Field(allocator);
-  const direction = allocFloat32Field(allocator);
-  const moving = allocUint8Field(allocator);
-  const size = allocator.size;
-  return { id, x, y, hue, direction, moving, size };
-})();
-
-export const BatchHeaderStruct = (() => {
-  const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const count = allocUint16Field(allocator);
-  const size = allocator.size;
-  const verifyMoved = (view: DataView) => {
-    return view.byteLength >= size
-      && (view.byteLength - size) % PlayerStruct.size === 0
-      && kind.read(view) === MessageKind.PlayerMoved
-  };
-  const verifyJoined = (view: DataView) => {
-    return view.byteLength >= size
-      && (view.byteLength - size) % PlayerStruct.size === 0
-      && kind.read(view) === MessageKind.PlayerJoined
-  };
-  return {kind, count, size, verifyMoved, verifyJoined };
-})();
 
 interface MessageCounter {
   count: number,

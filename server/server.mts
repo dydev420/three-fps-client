@@ -7,6 +7,12 @@ import { SERVER_PORT, SERVER_FPS, WORLD_WIDTH, WORLD_HEIGHT, } from '../common/h
 import { Player, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
 import app from "./app.mts";
+import PlayerMovingStruct from '../common/structs/PlayerMovingStruct';
+import PlayerTurningStruct from '../common/structs/PlayerTurningStruct';
+import BatchHeaderStruct from '../common/structs/HelloStruct copy';
+import PlayerStruct from '../common/structs/PlayerStruct';
+import PlayerLeftStruct from '../common/structs/PlayerLeftStruct';
+import HelloStruct from '../common/structs/HelloStruct';
 
 
 // init express server to serve html
@@ -159,13 +165,13 @@ wss.on('connection', (ws) => {
     if (event.data instanceof ArrayBuffer) {
       const view = new DataView(event.data);
       
-      if (common.PlayerMovingStruct.verify(view)) {
-        const direction = common.PlayerMovingStruct.direction.read(view);
-        const start = common.PlayerMovingStruct.start.read(view);
+      if (PlayerMovingStruct.verify(view)) {
+        const direction = PlayerMovingStruct.direction.read(view);
+        const start = PlayerMovingStruct.start.read(view);
         
         player.newMoving = common.applyDirectionMask(player.newMoving, direction, start)
-      } else if (common.PlayerTurningStruct.verify(view)) {
-        player.newDirection = common.PlayerTurningStruct.direction.read(view);
+      } else if (PlayerTurningStruct.verify(view)) {
+        player.newDirection = PlayerTurningStruct.direction.read(view);
         player.turned = true;
       } else if (PingPongStruct.verifyPing(view)) {
         pingIds.set(id, PingPongStruct.timestamp.read(view));
@@ -208,22 +214,22 @@ const tick = () => {
   // Initialize new joined players
   {
     const playerCount = players.size;
-    const buffer = new ArrayBuffer(common.BatchHeaderStruct.size + playerCount * common.PlayerStruct.size)
-    const headerView = new DataView(buffer, 0, common.BatchHeaderStruct.size);
-    common.BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerJoined);
-    common.BatchHeaderStruct.count.write(headerView, playerCount);
+    const buffer = new ArrayBuffer(BatchHeaderStruct.size + playerCount * PlayerStruct.size)
+    const headerView = new DataView(buffer, 0, BatchHeaderStruct.size);
+    BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerJoined);
+    BatchHeaderStruct.count.write(headerView, playerCount);
     
     
     let playerIndex = 0;
     // Add existing players data to the message
     players.forEach((player) => {
-      const playerView = new DataView(buffer, common.BatchHeaderStruct.size + playerIndex * common.PlayerStruct.size);
-      common.PlayerStruct.id.write(playerView, player.id);
-      common.PlayerStruct.x.write(playerView, player.position.x);
-      common.PlayerStruct.y.write(playerView, player.position.y);
-      common.PlayerStruct.direction.write(playerView, player.direction);
-      common.PlayerStruct.moving.write(playerView, player.moving);
-      common.PlayerStruct.hue.write(playerView, Math.floor(player.hue/360*256));
+      const playerView = new DataView(buffer, BatchHeaderStruct.size + playerIndex * PlayerStruct.size);
+      PlayerStruct.id.write(playerView, player.id);
+      PlayerStruct.x.write(playerView, player.position.x);
+      PlayerStruct.y.write(playerView, player.position.y);
+      PlayerStruct.direction.write(playerView, player.direction);
+      PlayerStruct.moving.write(playerView, player.moving);
+      PlayerStruct.hue.write(playerView, Math.floor(player.hue/360*256));
     
       playerIndex++;
     });
@@ -232,13 +238,13 @@ const tick = () => {
     joinedIds.forEach((playerId) => {
       const joinedPlayer = players.get(playerId);
       if (joinedPlayer !== undefined) {
-        const helloView = new DataView(new ArrayBuffer(common.HelloStruct.size));
-        common.HelloStruct.kind.write(helloView, MessageKind.Hello);
-        common.HelloStruct.id.write(helloView, joinedPlayer.id);
-        common.HelloStruct.x.write(helloView, joinedPlayer.position.x);
-        common.HelloStruct.y.write(helloView, joinedPlayer.position.y);
-        common.HelloStruct.direction.write(helloView, joinedPlayer.direction);
-        common.HelloStruct.hue.write(helloView, Math.floor(joinedPlayer.hue/360*256));
+        const helloView = new DataView(new ArrayBuffer(HelloStruct.size));
+        HelloStruct.kind.write(helloView, MessageKind.Hello);
+        HelloStruct.id.write(helloView, joinedPlayer.id);
+        HelloStruct.x.write(helloView, joinedPlayer.position.x);
+        HelloStruct.y.write(helloView, joinedPlayer.position.y);
+        HelloStruct.direction.write(helloView, joinedPlayer.direction);
+        HelloStruct.hue.write(helloView, Math.floor(joinedPlayer.hue/360*256));
         
         // Hello
         joinedPlayer.ws.send(helloView);
@@ -252,9 +258,9 @@ const tick = () => {
   // Notify existing players about new players
   if (joinedIds.size) {
     const playerCount = players.size;
-    const buffer = new ArrayBuffer(common.BatchHeaderStruct.size + playerCount * common.PlayerStruct.size)
-    const headerView = new DataView(buffer, 0, common.BatchHeaderStruct.size);
-    common.BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerJoined);
+    const buffer = new ArrayBuffer(BatchHeaderStruct.size + playerCount * PlayerStruct.size)
+    const headerView = new DataView(buffer, 0, BatchHeaderStruct.size);
+    BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerJoined);
 
     // use player index to keep track of added players to buffer and set count in buffer
     let playerIndex = 0;
@@ -262,18 +268,18 @@ const tick = () => {
     joinedIds.forEach((playerId) => {
       const otherPlayer = players.get(playerId);
       if (otherPlayer !== undefined) {
-        const playerView = new DataView(buffer, common.BatchHeaderStruct.size + playerIndex * common.PlayerStruct.size);
-        common.PlayerStruct.id.write(playerView, otherPlayer.id);
-        common.PlayerStruct.x.write(playerView, otherPlayer.position.x);
-        common.PlayerStruct.y.write(playerView, otherPlayer.position.y);
-        common.PlayerStruct.hue.write(playerView, Math.floor(otherPlayer.hue/360*256));
-        common.PlayerStruct.direction.write(playerView, otherPlayer.direction);
-        common.PlayerStruct.moving.write(playerView, otherPlayer.moving);
+        const playerView = new DataView(buffer, BatchHeaderStruct.size + playerIndex * PlayerStruct.size);
+        PlayerStruct.id.write(playerView, otherPlayer.id);
+        PlayerStruct.x.write(playerView, otherPlayer.position.x);
+        PlayerStruct.y.write(playerView, otherPlayer.position.y);
+        PlayerStruct.hue.write(playerView, Math.floor(otherPlayer.hue/360*256));
+        PlayerStruct.direction.write(playerView, otherPlayer.direction);
+        PlayerStruct.moving.write(playerView, otherPlayer.moving);
         
         playerIndex++;
       }
     });
-    common.BatchHeaderStruct.count.write(headerView, playerIndex);
+    BatchHeaderStruct.count.write(headerView, playerIndex);
 
     // Send to only old players
     players.forEach((player) => {
@@ -285,9 +291,9 @@ const tick = () => {
 
   // Notifying about who left
   leftIds.forEach((leftId) => {
-    const view = new DataView(new ArrayBuffer(common.PlayerLeftStruct.size));
-    common.PlayerLeftStruct.kind.write(view, MessageKind.PlayerLeft);
-    common.PlayerLeftStruct.id.write(view, leftId);
+    const view = new DataView(new ArrayBuffer(PlayerLeftStruct.size));
+    PlayerLeftStruct.kind.write(view, MessageKind.PlayerLeft);
+    PlayerLeftStruct.id.write(view, leftId);
     players.forEach((player) => {
       player.ws.send(view);
     });
@@ -308,10 +314,10 @@ const tick = () => {
       }
     });
     if (movedCount) {
-      const buffer = new ArrayBuffer(common.BatchHeaderStruct.size + movedCount * common.PlayerStruct.size);
-      const headerView = new DataView(buffer, 0, common.BatchHeaderStruct.size);
-      common.BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerMoved);
-      common.BatchHeaderStruct.count.write(headerView, movedCount);
+      const buffer = new ArrayBuffer(BatchHeaderStruct.size + movedCount * PlayerStruct.size);
+      const headerView = new DataView(buffer, 0, BatchHeaderStruct.size);
+      BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerMoved);
+      BatchHeaderStruct.count.write(headerView, movedCount);
       
       let movedIndex = 0;
       players.forEach((player) => {
@@ -325,13 +331,13 @@ const tick = () => {
         }
     
         if (moved){
-          const offset = common.BatchHeaderStruct.size + movedIndex * common.PlayerStruct.size;
-          const view = new DataView(buffer, offset, common.PlayerStruct.size);
-          common.PlayerStruct.id.write(view, player.id);
-          common.PlayerStruct.x.write(view, player.position.x);
-          common.PlayerStruct.y.write(view, player.position.y);
-          common.PlayerStruct.direction.write(view, player.direction);
-          common.PlayerStruct.moving.write(view, player.moving);
+          const offset = BatchHeaderStruct.size + movedIndex * PlayerStruct.size;
+          const view = new DataView(buffer, offset, PlayerStruct.size);
+          PlayerStruct.id.write(view, player.id);
+          PlayerStruct.x.write(view, player.position.x);
+          PlayerStruct.y.write(view, player.position.y);
+          PlayerStruct.direction.write(view, player.direction);
+          PlayerStruct.moving.write(view, player.moving);
         
           movedIndex++;
         }

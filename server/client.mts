@@ -3,6 +3,11 @@ import * as common from '../common/common.mjs';
 import { WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SIZE } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
+import BatchHeaderStruct from '../common/structs/HelloStruct copy';
+import PlayerLeftStruct from '../common/structs/PlayerLeftStruct';
+import PlayerStruct from '../common/structs/PlayerStruct';
+import HelloStruct from '../common/structs/HelloStruct';
+import PlayerMovingStruct from '../common/structs/PlayerMovingStruct';
 
 const CANVAS_STRETCH = 10;
 
@@ -85,16 +90,16 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
     if (me === undefined) {
       if (event.data instanceof ArrayBuffer) {
         const view = new DataView(event.data);
-        if (common.HelloStruct.verify(view)) {
+        if (HelloStruct.verify(view)) {
           me = {
-            id: common.HelloStruct.id.read(view),
+            id: HelloStruct.id.read(view),
             position: new Vector2(
-              common.HelloStruct.x.read(view),
-              common.HelloStruct.y.read(view),
+              HelloStruct.x.read(view),
+              HelloStruct.y.read(view),
             ),
-            hue: common.HelloStruct.hue.read(view)/256*360,
+            hue: HelloStruct.hue.read(view)/256*360,
             moving: 0,
-            direction: common.HelloStruct.direction.read(view),
+            direction: HelloStruct.direction.read(view),
           };
           players.set(me.id, me);
           console.log('Connected Players', me);
@@ -106,54 +111,54 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
     } else {
       if(event.data instanceof ArrayBuffer) {
         const view = new DataView(event.data);
-        if(common.BatchHeaderStruct.verifyJoined(view)) {
-          const count = common.BatchHeaderStruct.count.read(view);
+        if(BatchHeaderStruct.verifyJoined(view)) {
+          const count = BatchHeaderStruct.count.read(view);
 
           for (let i = 0; i < count ; i++) {
-            const offset = common.BatchHeaderStruct.size + i* common.PlayerStruct.size;
-            const playerView = new DataView(event.data, offset, common.PlayerStruct.size);
+            const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
+            const playerView = new DataView(event.data, offset, PlayerStruct.size);
 
-            const playerId = common.PlayerStruct.id.read(playerView);
+            const playerId = PlayerStruct.id.read(playerView);
             const player = players.get(playerId);
 
             if(player) {
-              player.position.x = common.PlayerStruct.x.read(playerView);
-              player.position.y = common.PlayerStruct.y.read(playerView);
-              player.hue = common.PlayerStruct.hue.read(playerView)/256*360;
-              player.direction = common.PlayerStruct.direction.read(playerView);
-              player.moving = common.PlayerStruct.moving.read(playerView);
+              player.position.x = PlayerStruct.x.read(playerView);
+              player.position.y = PlayerStruct.y.read(playerView);
+              player.hue = PlayerStruct.hue.read(playerView)/256*360;
+              player.direction = PlayerStruct.direction.read(playerView);
+              player.moving = PlayerStruct.moving.read(playerView);
             } else {
-              const x = common.PlayerStruct.x.read(playerView);
-              const y = common.PlayerStruct.y.read(playerView);
+              const x = PlayerStruct.x.read(playerView);
+              const y = PlayerStruct.y.read(playerView);
               players.set(playerId, {
                 id: playerId,
                 position: new Vector2(x, y),
-                direction: common.PlayerStruct.direction.read(playerView), // change this or BUGS
-                moving: common.PlayerStruct.moving.read(playerView),
-                hue: common.PlayerStruct.hue.read(playerView)/256*360,
+                direction: PlayerStruct.direction.read(playerView), // change this or BUGS
+                moving: PlayerStruct.moving.read(playerView),
+                hue: PlayerStruct.hue.read(playerView)/256*360,
               });
             } 
           }
-        } else if (common.PlayerLeftStruct.verify(view)) {
-          players.delete(common.PlayerLeftStruct.id.read(view));
-          console.log('Payer Left -- id:', common.PlayerLeftStruct.id.read(view));
-        } else if (common.BatchHeaderStruct.verifyMoved(view)) {
-          const count = common.BatchHeaderStruct.count.read(view);
+        } else if (PlayerLeftStruct.verify(view)) {
+          players.delete(PlayerLeftStruct.id.read(view));
+          console.log('Payer Left -- id:', PlayerLeftStruct.id.read(view));
+        } else if (BatchHeaderStruct.verifyMoved(view)) {
+          const count = BatchHeaderStruct.count.read(view);
 
           for (let i = 0; i < count ; i++) {
-            const offset = common.BatchHeaderStruct.size + i* common.PlayerStruct.size;
+            const offset = BatchHeaderStruct.size + i* PlayerStruct.size;
             const playerView = new DataView(event.data, offset);
 
-            const playerId = common.PlayerStruct.id.read(playerView);
+            const playerId = PlayerStruct.id.read(playerView);
             const player = players.get(playerId);
             if(!player) {
               console.log('Unknown player id:', playerId);
               return;
             }
-            player.moving = common.PlayerStruct.moving.read(playerView);
-            player.direction = common.PlayerStruct.direction.read(playerView);
-            player.position.x = common.PlayerStruct.x.read(playerView);
-            player.position.y = common.PlayerStruct.y.read(playerView);
+            player.moving = PlayerStruct.moving.read(playerView);
+            player.direction = PlayerStruct.direction.read(playerView);
+            player.position.x = PlayerStruct.x.read(playerView);
+            player.position.y = PlayerStruct.y.read(playerView);
           }
         } else if (PingPongStruct.verifyPong(view)) {
             ping = performance.now() - PingPongStruct.timestamp.read(view);
@@ -243,10 +248,10 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
     if (!e.repeat) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
-        const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        common.PlayerMovingStruct.start.write(view, 1);
-        common.PlayerMovingStruct.direction.write(view, direction);
+        const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
+        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
+        PlayerMovingStruct.start.write(view, 1);
+        PlayerMovingStruct.direction.write(view, direction);
         
         ws.send(view);
       }
@@ -260,10 +265,10 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
-        const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        common.PlayerMovingStruct.start.write(view, 0);
-        common.PlayerMovingStruct.direction.write(view, direction);
+        const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
+        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
+        PlayerMovingStruct.start.write(view, 0);
+        PlayerMovingStruct.direction.write(view, direction);
         ws.send(view);
       }
     }
