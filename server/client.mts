@@ -67,7 +67,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
    */
   // const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
   const wsUrl = common.getConnectionUrl(new URL(window.location.href));
-  const ws = new WebSocket(wsUrl);
+  let ws: WebSocket | undefined = new WebSocket(wsUrl);
   ws.binaryType = 'arraybuffer';
  
   ws.addEventListener('open', (event) => {
@@ -76,6 +76,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
 
   ws.addEventListener('close', (event) => {
     console.log('On WebSocket CLOSE', event);
+    ws = undefined;
   });
 
   ws.addEventListener('message', async (event) => {
@@ -97,7 +98,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
           console.log('Connected Players', me);
         } else {
           console.log('Wrong Hello message received. Closing connection');
-          ws.close();
+          ws?.close();
         }
       } 
     } else {
@@ -156,7 +157,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
             ping = performance.now() - common.PingPongStruct.timestamp.read(view);
         } else {
           console.log('Unexpected binary message');
-          ws.close();
+          ws?.close();
         }
       }
     }
@@ -180,11 +181,11 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
     ctx.fillStyle = '#181818';
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    if (ws === undefined) {
+    if (!ws || !ws.readyState) {
       const label = "Not Connected";
       const labelSize = ctx.measureText(label);
       ctx.font = "32px bold";
-      ctx.fillStyle = "#080808";
+      ctx.fillStyle = "#faaaaa";
       ctx.fillText(label, ctx.canvas.width/2 - labelSize.width/2, ctx.canvas.height/2 - labelSize.width/2);
     } else {
       // Player game loop
