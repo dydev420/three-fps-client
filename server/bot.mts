@@ -1,6 +1,6 @@
 import { WebSocket } from "ws";
-import * as common from './common.mjs';
-import type { Player } from "./common.mjs";
+import * as common from '../common/common.mjs';
+import { Player, Moving, MessageKind } from "../common/types";
 import { Vector2 } from "./lib/vector.mjs";
 
 // Set number of bots
@@ -103,10 +103,10 @@ function createBot(): Bot {
   function turn() {
     if (bot.me !== undefined) {
       const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-      common.PlayerMovingStruct.kind.write(view, common.MessageKind.PlayerMoving);
+      common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
 
       // Full stop
-      for (let direction = 0; direction < common.Moving.Count; ++direction) {
+      for (let direction = 0; direction < Moving.Count; ++direction) {
         if ((bot.me.moving >> direction) & 1) {
           common.PlayerMovingStruct.direction.write(view, direction);
           common.PlayerMovingStruct.start.write(view, 0);
@@ -115,7 +115,7 @@ function createBot(): Bot {
       }
 
       // New direction
-      const direction = Math.floor(Math.random() * common.Moving.Count);
+      const direction = Math.floor(Math.random() * Moving.Count);
       bot.timeoutBeforeTurn = Math.random() * common.WORLD_WIDTH * 0.5 / common.PLAYER_SPEED;
 
       // Sync

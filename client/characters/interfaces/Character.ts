@@ -1,5 +1,5 @@
 import { Vector3 } from 'three';
-import type { Player } from '../../../server/common.mts';
+import type { Player } from '../../../common/types';
 import CharacterPawn from '../../render/pawn/CharacterPawn';
 
 interface Character {

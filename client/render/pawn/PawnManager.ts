@@ -3,7 +3,7 @@ import Character from "../../characters/interfaces/Character";
 import MyPlayer from "../../characters/MyPlayer";
 import OnlinePlayer from "../../characters/OnlinePlayer";
 import type { Game } from "../../game";
-import { Player } from '../../../server/common.mts';
+import { Player } from '../../../common/types';
 
 class PawnManager {
   game: Game;

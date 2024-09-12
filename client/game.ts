@@ -1,7 +1,7 @@
 // import { WebSocket } from "ws";
 import { Vector2 } from "../server/lib/vector.mts";
-import * as common from "../server/common.mts";
-import type { Player } from "../server/common.mts";
+import * as common from "../common/common.mts";
+import { Player } from "../common/types";
 
 export interface Game {
   // camera: 

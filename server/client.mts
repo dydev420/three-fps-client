@@ -1,18 +1,18 @@
 import { Vector2 } from './lib/vector.mjs';
-import * as common from './common.mjs';
-import type { Player, } from "./common.mjs";
+import * as common from '../common/common.mjs';
+import { Player, Moving, MessageKind } from "../common/types";
 
 const CANVAS_STRETCH = 10;
 
-const DIRECTION_KEYS: {[key: string]: common.Moving} = {
-  ArrowLeft: common.Moving.TurningLeft,
-  ArrowRight: common.Moving.TurningRight,
-  ArrowUp: common.Moving.MovingForward,
-  ArrowDown: common.Moving.MovingBackward,
-  KeyA: common.Moving.TurningLeft,
-  KeyD: common.Moving.TurningRight,
-  KeyW: common.Moving.MovingForward,
-  KeyS: common.Moving.MovingBackward,
+const DIRECTION_KEYS: {[key: string]: Moving} = {
+  ArrowLeft: Moving.TurningLeft,
+  ArrowRight: Moving.TurningRight,
+  ArrowUp: Moving.MovingForward,
+  ArrowDown: Moving.MovingBackward,
+  KeyA: Moving.TurningLeft,
+  KeyD: Moving.TurningRight,
+  KeyW: Moving.MovingForward,
+  KeyS: Moving.MovingBackward,
 };
 
 function strokeLine(ctx: CanvasRenderingContext2D, p1: Vector2, p2: Vector2) {
@@ -215,7 +215,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       if (ws?.readyState && pingCoolDown <= 0) {
         const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
         common.PingPongStruct.write(view, {
-          kind: common.MessageKind.Ping,
+          kind: MessageKind.Ping,
           timestamp: performance.now(),
         });
         ws.send(view);
@@ -242,7 +242,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, common.MessageKind.PlayerMoving);
+        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
         common.PlayerMovingStruct.start.write(view, 1);
         common.PlayerMovingStruct.direction.write(view, direction);
         
@@ -259,7 +259,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, common.MessageKind.PlayerMoving);
+        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
         common.PlayerMovingStruct.start.write(view, 0);
         common.PlayerMovingStruct.direction.write(view, direction);
         ws.send(view);

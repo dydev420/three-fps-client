@@ -1,5 +1,7 @@
 import * as ws from "ws";
-import { Vector2, Vector3 } from "./lib/vector.mjs";
+import { Vector2, Vector3 } from "../server/lib/vector.mjs";
+import { Player, Moving, Field, MessageKind,  } from './types';
+
 
 export const SERVER_PORT = 6969;
 export const SERVER_FPS = 60;
@@ -27,35 +29,12 @@ export function properMod(a: number, b: number) {
   return (a % b + b) % b;
 }
 
-export enum Moving {
-    MovingForward = 0,
-    MovingBackward,
-    TurningLeft,
-    TurningRight,
-    Count,
-}
-
 export function checkDirectionMask(moving: number, dir: number): number {
   return (moving>>dir)&1;
 }
 
 export function applyDirectionMask(moving: number, dir: number, start: number = 0): number {
   return start ? moving|(1<<dir) : moving&~(1<<dir);
-}
-
-export interface Player {
-  id: number,
-  position: Vector2,
-  direction: number,
-  moving: number,
-  hue: number,
-}
-
-interface Field {
-  offset: number,
-  size: number,
-  read(view: DataView): number,
-  write(view: DataView, value: number): void,
 }
 
 const UINT8_SIZE = 1;
@@ -139,16 +118,7 @@ function structReader(fields: {[key: string]: Field}) {
   };
 }
 
-export enum MessageKind {
-  Ping,
-  Pong,
-  Hello,
-  PlayerJoined,
-  PlayerLeft,
-  PlayerMoved,
-  PlayerMoving,
-  PlayerTurning,
-}
+
 
 export const PingPongStruct = (() => {
   const allocator = { size: 0 };

@@ -2,8 +2,8 @@ import 'dotenv/config';
 
 import { WebSocketServer, WebSocket } from "ws";
 import { Vector2 } from "./lib/vector.mjs";
-import * as common from './common.mjs';
-import type { Player } from "./common.mjs";
+import * as common from '../common/common.mjs';
+import { Player, MessageKind } from "../common/types";
 import app from "./app.mts";
 
 
@@ -208,7 +208,7 @@ const tick = () => {
     const playerCount = players.size;
     const buffer = new ArrayBuffer(common.BatchHeaderStruct.size + playerCount * common.PlayerStruct.size)
     const headerView = new DataView(buffer, 0, common.BatchHeaderStruct.size);
-    common.BatchHeaderStruct.kind.write(headerView, common.MessageKind.PlayerJoined);
+    common.BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerJoined);
     common.BatchHeaderStruct.count.write(headerView, playerCount);
     
     
@@ -231,7 +231,7 @@ const tick = () => {
       const joinedPlayer = players.get(playerId);
       if (joinedPlayer !== undefined) {
         const helloView = new DataView(new ArrayBuffer(common.HelloStruct.size));
-        common.HelloStruct.kind.write(helloView, common.MessageKind.Hello);
+        common.HelloStruct.kind.write(helloView, MessageKind.Hello);
         common.HelloStruct.id.write(helloView, joinedPlayer.id);
         common.HelloStruct.x.write(helloView, joinedPlayer.position.x);
         common.HelloStruct.y.write(helloView, joinedPlayer.position.y);
@@ -252,7 +252,7 @@ const tick = () => {
     const playerCount = players.size;
     const buffer = new ArrayBuffer(common.BatchHeaderStruct.size + playerCount * common.PlayerStruct.size)
     const headerView = new DataView(buffer, 0, common.BatchHeaderStruct.size);
-    common.BatchHeaderStruct.kind.write(headerView, common.MessageKind.PlayerJoined);
+    common.BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerJoined);
 
     // use player index to keep track of added players to buffer and set count in buffer
     let playerIndex = 0;
@@ -284,7 +284,7 @@ const tick = () => {
   // Notifying about who left
   leftIds.forEach((leftId) => {
     const view = new DataView(new ArrayBuffer(common.PlayerLeftStruct.size));
-    common.PlayerLeftStruct.kind.write(view, common.MessageKind.PlayerLeft);
+    common.PlayerLeftStruct.kind.write(view, MessageKind.PlayerLeft);
     common.PlayerLeftStruct.id.write(view, leftId);
     players.forEach((player) => {
       player.ws.send(view);
@@ -308,7 +308,7 @@ const tick = () => {
     if (movedCount) {
       const buffer = new ArrayBuffer(common.BatchHeaderStruct.size + movedCount * common.PlayerStruct.size);
       const headerView = new DataView(buffer, 0, common.BatchHeaderStruct.size);
-      common.BatchHeaderStruct.kind.write(headerView, common.MessageKind.PlayerMoved);
+      common.BatchHeaderStruct.kind.write(headerView, MessageKind.PlayerMoved);
       common.BatchHeaderStruct.count.write(headerView, movedCount);
       
       let movedIndex = 0;
@@ -351,7 +351,7 @@ const tick = () => {
       const view = new DataView(new ArrayBuffer(common.PingPongStruct.size));
       common.PingPongStruct.write(view, {
         timestamp,
-        kind: common.MessageKind.Pong,
+        kind: MessageKind.Pong,
       });
       player.ws.send(view);
     }

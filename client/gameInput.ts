@@ -1,19 +1,19 @@
 import { Vector2 } from "../server/lib/vector.mts";
-import * as common from "../server/common.mts";
-import type { Player } from "../server/common.mts";
+import * as common from "../common/common.mts";
+import { Player, Moving, MessageKind } from "../common/types";
 
 // import { useGame } from "./render/init";
 import type { Game } from "./game";
 
-export const DIRECTION_KEYS: {[key: string]: common.Moving} = {
-  ArrowLeft: common.Moving.TurningLeft,
-  ArrowRight: common.Moving.TurningRight,
-  ArrowUp: common.Moving.MovingForward,
-  ArrowDown: common.Moving.MovingBackward,
-  KeyA: common.Moving.TurningLeft,
-  KeyD: common.Moving.TurningRight,
-  KeyW: common.Moving.MovingForward,
-  KeyS: common.Moving.MovingBackward,
+export const DIRECTION_KEYS: {[key: string]: Moving} = {
+  ArrowLeft: Moving.TurningLeft,
+  ArrowRight: Moving.TurningRight,
+  ArrowUp: Moving.MovingForward,
+  ArrowDown: Moving.MovingBackward,
+  KeyA: Moving.TurningLeft,
+  KeyD: Moving.TurningRight,
+  KeyW: Moving.MovingForward,
+  KeyS: Moving.MovingBackward,
 };
 
 export let mouseState: { mouseXDelta: number, mouseYDelta: number } = {
@@ -38,7 +38,7 @@ export function addInputListeners(game: Game) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, common.MessageKind.PlayerMoving);
+        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
         common.PlayerMovingStruct.start.write(view, 1);
         common.PlayerMovingStruct.direction.write(view, direction);
         
@@ -55,7 +55,7 @@ export function addInputListeners(game: Game) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(common.PlayerMovingStruct.size));
-        common.PlayerMovingStruct.kind.write(view, common.MessageKind.PlayerMoving);
+        common.PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
         common.PlayerMovingStruct.start.write(view, 0);
         common.PlayerMovingStruct.direction.write(view, direction);
         game.ws.send(view);
@@ -80,7 +80,7 @@ export function addInputListeners(game: Game) {
     game.me.direction += dx;
     
     const view = new DataView(new ArrayBuffer(common.PlayerTurningStruct.size));
-    common.PlayerTurningStruct.kind.write(view, common.MessageKind.PlayerTurning);
+    common.PlayerTurningStruct.kind.write(view, MessageKind.PlayerTurning);
     common.PlayerTurningStruct.direction.write(view, game.me.direction);
     game.ws.send(view);
   });

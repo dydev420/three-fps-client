@@ -1,17 +1,19 @@
 import { ArrowHelper, BoxGeometry, Mesh, Color, MeshStandardMaterial, Scene, Vector3 } from 'three';
 import DebugBox from "./interfaces/DebugBox";
-import * as common from '../../server/common.mts';
+import * as common from '../../common/common.mjs'
+import type { Player } from '../../common/types';
+
 
 class PlayerDebugBox implements DebugBox {
   selfUpdate: boolean;
   id: number;
-  player: common.Player;
+  player: Player;
   geometry: BoxGeometry;
   material: MeshStandardMaterial;
   mesh: Mesh;
   arrow: ArrowHelper | undefined;
 
-  constructor(player: common.Player, id: number, selfUpdate: boolean = false) {
+  constructor(player: Player, id: number, selfUpdate: boolean = false) {
     this.selfUpdate = selfUpdate;
     this.player = player;
     this.id = id;
@@ -30,7 +32,7 @@ class PlayerDebugBox implements DebugBox {
     }
   }
 
-  updateMesh(player: common.Player) {
+  updateMesh(player: Player) {
     if(player) {
       const { position } = player;
       
@@ -40,7 +42,7 @@ class PlayerDebugBox implements DebugBox {
     }
   }
 
-  updateArrow(player: common.Player, scene: Scene) {
+  updateArrow(player: Player, scene: Scene) {
     if(this.arrow) {
       this.arrow.dispose();
       scene.remove(this.arrow);

@@ -20,6 +20,6 @@
     "noFallthroughCasesInSwitch": true
     
   },
-  "include": ["client", "server", "vite.config.ts"],
+  "include": ["client", "server",  "common", "vite.config.ts"],
   "exclude": ["etc"],
 }

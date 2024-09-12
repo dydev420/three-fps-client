@@ -1,5 +1,5 @@
 import { Mesh, Scene } from 'three';
-import { Player } from '../../../server/common.mts';
+import { Player } from '../../../common/types';
 
 interface DebugBox {
   selfUpdate: boolean;
