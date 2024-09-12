@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { WebSocketServer, WebSocket } from "ws";
 import { Vector2 } from "./lib/vector.mjs";
-import * as common from '../common/index.mjs';
+import { applyDirectionMask, updatePlayer } from '../common/index.mts';
 import { SERVER_PORT, SERVER_FPS, WORLD_WIDTH, WORLD_HEIGHT, } from '../common/helpers/constants';
 import { Player, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
@@ -20,7 +20,7 @@ const httpServer = app.listen(process.env.PORT, () => console.log('Express Serve
 
 // init WebSocket server for multiplayer connections
 const wss = new WebSocketServer({
-  // port: common.SERVER_PORT as number,
+  // port: SERVER_PORT as number,
   server: httpServer,
 });
 
@@ -167,7 +167,7 @@ wss.on('connection', (ws) => {
       
       if (PlayerMovingStruct.verify(view)) {
         const { direction, start } = PlayerMovingStruct.read(view);
-        player.newMoving = common.applyDirectionMask(player.newMoving, direction, start)
+        player.newMoving = applyDirectionMask(player.newMoving, direction, start)
       } else if (PlayerTurningStruct.verify(view)) {
         player.newDirection = PlayerTurningStruct.direction.read(view);
         player.turned = true;
@@ -358,7 +358,7 @@ const tick = () => {
   }
   
   // Update Engine tick
-  players.forEach((player) => common.updatePlayer(player, deltaTime));  
+  players.forEach((player) => updatePlayer(player, deltaTime));  
   
   // returning pings
   pingIds.forEach((timestamp, id) => {

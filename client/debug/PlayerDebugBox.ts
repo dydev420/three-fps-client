@@ -1,6 +1,6 @@
 import { ArrowHelper, BoxGeometry, Mesh, Color, MeshStandardMaterial, Scene, Vector3 } from 'three';
 import DebugBox from "./interfaces/DebugBox";
-import * as common from '../../common/index.mjs'
+import { getForwardDir, updatePlayer, vec3D } from '../../common/index.mjs'
 import type { Player } from '../../common/types';
 
 
@@ -49,8 +49,8 @@ class PlayerDebugBox implements DebugBox {
     }
 
     if(player) {
-      const forwardDir = common.vec3D(common.getForwardDir(player));
-      const playerPosition = common.vec3D(player.position);
+      const forwardDir = vec3D(getForwardDir(player));
+      const playerPosition = vec3D(player.position);
       const forwardVector = new Vector3(forwardDir.x, forwardDir.y, forwardDir.z);
       const origin = new Vector3(
         playerPosition.x,
@@ -68,7 +68,7 @@ class PlayerDebugBox implements DebugBox {
       // only call player physics update if selfUpdating
       // (use selfUpdating when there is no real network pawn controller in the scene)
       if(this.selfUpdate) {
-        common.updatePlayer(this.player, deltaTime);
+        updatePlayer(this.player, deltaTime);
       }
 
       // update mesh immediately after updating player on engine

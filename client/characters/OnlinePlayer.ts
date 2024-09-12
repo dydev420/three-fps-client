@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import { _calculateObjectSize } from '../render/controllers/utils/objects'
-import * as common from '../../common/index.mts';
+import { updatePlayer } from '../../common/index.mts';
 import type { Player} from '../../common/types';
 import CharacterPawn from '../render/pawn/CharacterPawn';
 import Character from './interfaces/Character';
@@ -32,7 +32,7 @@ class OnlinePlayer implements Character {
 
   update(deltaTime: number) {
     if(this.player) {      
-      common.updatePlayer(this.player, deltaTime);
+      updatePlayer(this.player, deltaTime);
       this.position.x = this.player.position.x;
       this.position.z = this.player.position.y;
 

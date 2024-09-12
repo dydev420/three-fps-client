@@ -1,6 +1,6 @@
 // import { WebSocket } from "ws";
 import { Vector2 } from "../server/lib/vector.mts";
-import * as common from "../common/index.mts";
+import { getConnectionUrl } from "../common/index.mts";
 import { Player } from "../common/types";
 import PingPongStruct from "../common/structs/PingPongStruct";
 import HelloStruct from "../common/structs/HelloStruct";
@@ -17,8 +17,7 @@ export interface Game {
 }
 
 export function createGame(): Game {
-  // const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
-  const wsUrl = common.getConnectionUrl(new URL(window.location.href));
+  const wsUrl = getConnectionUrl(new URL(window.location.href));
   const ws = new WebSocket(wsUrl);
   ws.binaryType = 'arraybuffer';
   const players = new Map();

@@ -1,5 +1,5 @@
 import { Vector2 } from './lib/vector.mjs';
-import * as common from '../common/index.mjs';
+import { getConnectionUrl, updatePlayer } from '../common/index.mjs';
 import { WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SIZE } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
@@ -72,8 +72,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
   /**
    * WebSocket
    */
-  // const ws = new WebSocket(`ws://localhost:${common.SERVER_PORT}`);
-  const wsUrl = common.getConnectionUrl(new URL(window.location.href));
+  const wsUrl = getConnectionUrl(new URL(window.location.href));
   let ws: WebSocket | undefined = new WebSocket(wsUrl);
   ws.binaryType = 'arraybuffer';
  
@@ -199,7 +198,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       // Player game loop
       players.forEach((player) => {
         // Update all player physics
-        common.updatePlayer(player, deltaTime);
+        updatePlayer(player, deltaTime);
         
         if(player.id !== me?.id ) {
           drawPlayerBody(ctx, player);
