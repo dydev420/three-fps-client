@@ -21,7 +21,7 @@ import { addPhysics } from './render/physics/physics'
 
 
 import { TickData } from './render/tickManager';
-import { WORLD_HEIGHT, WORLD_WIDTH } from '../common/common.mts'
+import { WORLD_HEIGHT, WORLD_WIDTH } from '../common/helpers/constants'
 
 const MOTION_BLUR_AMOUNT = 0.5
 

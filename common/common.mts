@@ -2,6 +2,10 @@ import * as ws from "ws";
 import { Vector2, Vector3 } from "../server/lib/vector.mjs";
 import { Player, Moving, Field, MessageKind,  } from './types';
 import {
+  PLAYER_SIZE,
+  PLAYER_SPEED,
+} from './helpers/constants' 
+import {
   allocFloat32Field,
   allocUint16Field,
   allocUint32Field,
@@ -13,12 +17,6 @@ import {
   structReader,
 } from './helpers/structs';
 
-export const SERVER_PORT = 6969;
-export const SERVER_FPS = 60;
-export const WORLD_WIDTH = 8 * 100 * 0.1;
-export const WORLD_HEIGHT = 6 * 100 * 0.1;
-export const PLAYER_SIZE = 30 * 0.5;
-export const PLAYER_SPEED = 20;
 
 export const getConnectionUrl = (url: URL) => {
   let { protocol, hostname, port } = url;

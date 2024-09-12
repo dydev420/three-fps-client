@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { WebSocketServer, WebSocket } from "ws";
 import { Vector2 } from "./lib/vector.mjs";
 import * as common from '../common/common.mjs';
+import { SERVER_PORT, SERVER_FPS, WORLD_WIDTH, WORLD_HEIGHT, } from '../common/helpers/constants';
 import { Player, MessageKind } from "../common/types";
 import app from "./app.mts";
 
@@ -16,7 +17,7 @@ const wss = new WebSocketServer({
   server: httpServer,
 });
 
-console.log(`Listening on wss://localhost:${common.SERVER_PORT}`);
+console.log(`Listening on wss://localhost:${SERVER_PORT}`);
 
 /**
  * Multiplayer Websocket server
@@ -123,8 +124,8 @@ wss.on('connection', (ws) => {
   ws.binaryType = 'arraybuffer';
 
   const id = idCounter++;
-  const x = Math.random() * common.WORLD_WIDTH;
-  const y = Math.random() * common.WORLD_HEIGHT;
+  const x = Math.random() * WORLD_WIDTH;
+  const y = Math.random() * WORLD_HEIGHT;
   const position = new Vector2(x, y);
   const hue = randomHue();
   const player = {
@@ -372,7 +373,7 @@ const tick = () => {
   pushAverage(stats.tickBytesReceived, bytesReceivedWithinTick);
   stats.playersCount = players.size;
   stats.upTime = performance.now() - stats.startedAt;
-  if (stats.tickCount % common.SERVER_FPS === 0) {
+  if (stats.tickCount % SERVER_FPS === 0) {
   //  printStats();
   }
   
@@ -382,11 +383,11 @@ const tick = () => {
   pingIds.clear();
   bytesReceivedWithinTick = 0;
   messagesReceivedWithinTick = 0;
-  setTimeout(tick, 1000/common.SERVER_FPS);
+  setTimeout(tick, 1000/SERVER_FPS);
 }
 
 // Start Server Tick
 setTimeout(() => {
   previousTimestamp = Date.now();
   tick();
-}, 1000/common.SERVER_FPS);
+}, 1000/SERVER_FPS);

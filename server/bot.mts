@@ -1,5 +1,6 @@
 import { WebSocket } from "ws";
 import * as common from '../common/common.mjs';
+import { SERVER_PORT, WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SPEED } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import { Vector2 } from "./lib/vector.mjs";
 
@@ -21,10 +22,10 @@ interface Bot {
 
 function createBot(): Bot {
   const bot: Bot =  {
-    ws : new WebSocket(`ws://localhost:${common.SERVER_PORT}`),
+    ws : new WebSocket(`ws://localhost:${SERVER_PORT}`),
     me : undefined,
-    goalX : common.WORLD_WIDTH * 0.5,
-    goalY : common.WORLD_HEIGHT * 0.5,
+    goalX : WORLD_WIDTH * 0.5,
+    goalY : WORLD_HEIGHT * 0.5,
     timeoutBeforeTurn: undefined,
     previousTimestamp: Date.now(),
   };
@@ -116,7 +117,7 @@ function createBot(): Bot {
 
       // New direction
       const direction = Math.floor(Math.random() * Moving.Count);
-      bot.timeoutBeforeTurn = Math.random() * common.WORLD_WIDTH * 0.5 / common.PLAYER_SPEED;
+      bot.timeoutBeforeTurn = Math.random() * WORLD_WIDTH * 0.5 / PLAYER_SPEED;
 
       // Sync
       common.PlayerMovingStruct.direction.write(view, direction);

@@ -1,5 +1,6 @@
 import { Vector2 } from './lib/vector.mjs';
 import * as common from '../common/common.mjs';
+import { WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SIZE } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 
 const CANVAS_STRETCH = 10;
@@ -25,16 +26,16 @@ function strokeLine(ctx: CanvasRenderingContext2D, p1: Vector2, p2: Vector2) {
 function drawPlayerBody(ctx: CanvasRenderingContext2D, player: Player) {
   // Draw Player Body
   ctx.fillStyle = `hsl(${player.hue} 80% 40%)`;
-  ctx.fillRect(player.position.x * CANVAS_STRETCH, player.position.y * CANVAS_STRETCH, common.PLAYER_SIZE, common.PLAYER_SIZE);
+  ctx.fillRect(player.position.x * CANVAS_STRETCH, player.position.y * CANVAS_STRETCH, PLAYER_SIZE, PLAYER_SIZE);
 
   // forward direction arrow
   ctx.strokeStyle = `hsl(${player.hue} 80% 50%)`;
   ctx.lineWidth = 4;
-  const center = player.position.clone().scale(CANVAS_STRETCH).add(new Vector2(common.PLAYER_SIZE * 0.5, common.PLAYER_SIZE * 0.5));
+  const center = player.position.clone().scale(CANVAS_STRETCH).add(new Vector2(PLAYER_SIZE * 0.5, PLAYER_SIZE * 0.5));
   strokeLine(
     ctx,
     center,
-    new Vector2().setPolar(player.direction, common.PLAYER_SIZE).scale(CANVAS_STRETCH * 0.2).add(center)
+    new Vector2().setPolar(player.direction, PLAYER_SIZE).scale(CANVAS_STRETCH * 0.2).add(center)
   );
 }
 
@@ -42,13 +43,13 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
   const xPos = (player.position.x * CANVAS_STRETCH) - 5 ;
   const yPos = (player.position.y * CANVAS_STRETCH) - 5;
   ctx.fillStyle = '#FFFFFF';
-  ctx.fillRect(xPos, yPos, common.PLAYER_SIZE + 10, common.PLAYER_SIZE + 10);
+  ctx.fillRect(xPos, yPos, PLAYER_SIZE + 10, PLAYER_SIZE + 10);
 }
 
 (async () => {
   const gameCanvas = document.getElementById('game') as HTMLCanvasElement;
-  gameCanvas.width = common.WORLD_WIDTH * CANVAS_STRETCH;
-  gameCanvas.height = common.WORLD_HEIGHT * CANVAS_STRETCH;
+  gameCanvas.width = WORLD_WIDTH * CANVAS_STRETCH;
+  gameCanvas.height = WORLD_HEIGHT * CANVAS_STRETCH;
 
   const ctx = gameCanvas.getContext('2d');
   if (!ctx) throw new Error('2d canvas not supported');
