@@ -40,10 +40,11 @@ export function addInputListeners(game: Game) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
-        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        PlayerMovingStruct.start.write(view, 1);
-        PlayerMovingStruct.direction.write(view, direction);
-        
+        PlayerMovingStruct.write(view, {
+          kind: MessageKind.PlayerMoving,
+          start: 1,
+          direction,
+        });
         game.ws.send(view);
       }
     }
@@ -57,9 +58,11 @@ export function addInputListeners(game: Game) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
-        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        PlayerMovingStruct.start.write(view, 0);
-        PlayerMovingStruct.direction.write(view, direction);
+        PlayerMovingStruct.write(view, {
+          kind: MessageKind.PlayerMoving,
+          start: 0,
+          direction,
+        });
         game.ws.send(view);
       }
     }

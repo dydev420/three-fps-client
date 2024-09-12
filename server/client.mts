@@ -250,9 +250,11 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
-        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        PlayerMovingStruct.start.write(view, 1);
-        PlayerMovingStruct.direction.write(view, direction);
+        PlayerMovingStruct.write(view, {
+          kind: MessageKind.PlayerMoving,
+          direction,
+          start: 1,
+        });
         
         ws.send(view);
       }
@@ -267,9 +269,11 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       const direction = DIRECTION_KEYS[e.code];
       if (direction !== undefined) {
         const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
-        PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
-        PlayerMovingStruct.start.write(view, 0);
-        PlayerMovingStruct.direction.write(view, direction);
+        PlayerMovingStruct.write(view, {
+          kind: MessageKind.PlayerMoving,
+          direction,
+          start: 0,
+        });
         ws.send(view);
       }
     }

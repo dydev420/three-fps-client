@@ -166,9 +166,7 @@ wss.on('connection', (ws) => {
       const view = new DataView(event.data);
       
       if (PlayerMovingStruct.verify(view)) {
-        const direction = PlayerMovingStruct.direction.read(view);
-        const start = PlayerMovingStruct.start.read(view);
-        
+        const { direction, start } = PlayerMovingStruct.read(view);
         player.newMoving = common.applyDirectionMask(player.newMoving, direction, start)
       } else if (PlayerTurningStruct.verify(view)) {
         player.newDirection = PlayerTurningStruct.direction.read(view);

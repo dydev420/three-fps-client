@@ -109,13 +109,15 @@ function createBot(): Bot {
   function turn() {
     if (bot.me !== undefined) {
       const view = new DataView(new ArrayBuffer(PlayerMovingStruct.size));
-      PlayerMovingStruct.kind.write(view, MessageKind.PlayerMoving);
 
       // Full stop
       for (let direction = 0; direction < Moving.Count; ++direction) {
         if ((bot.me.moving >> direction) & 1) {
-          PlayerMovingStruct.direction.write(view, direction);
-          PlayerMovingStruct.start.write(view, 0);
+          PlayerMovingStruct.write(view, {
+            kind: MessageKind.PlayerMoving,
+            direction,
+            start: 0,
+          });
           bot.ws.send(view);
         }
       }
@@ -125,8 +127,11 @@ function createBot(): Bot {
       bot.timeoutBeforeTurn = Math.random() * WORLD_WIDTH * 0.5 / PLAYER_SPEED;
 
       // Sync
-      PlayerMovingStruct.direction.write(view, direction);
-      PlayerMovingStruct.start.write(view, 1);
+      PlayerMovingStruct.write(view, {
+        kind: MessageKind.PlayerMoving,
+        direction,
+        start: 1,
+      });
       bot.ws.send(view);
     }
   }
