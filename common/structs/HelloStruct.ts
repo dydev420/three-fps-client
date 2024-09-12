@@ -4,15 +4,25 @@ import { verifier, writer, reader } from "../helpers/structs";
 
 const HelloStruct = (() => {
   const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const id = allocUint32Field(allocator);
-  const x = allocFloat32Field(allocator);
-  const y = allocFloat32Field(allocator);
-  const direction = allocFloat32Field(allocator);
-  const hue = allocUint8Field(allocator);
-  const size = allocator.size;
-  const verify = verifier(kind, MessageKind.Hello, size);
-  return { kind, id, x, y, direction, hue, size, verify };
+  const fields = {
+    kind: allocUint8Field(allocator),
+    id: allocUint32Field(allocator),
+    x: allocFloat32Field(allocator),
+    y: allocFloat32Field(allocator),
+    direction: allocFloat32Field(allocator),
+    hue: allocUint8Field(allocator),
+  };
+  type Props = keyof typeof fields;  
+  const helpers = {
+    verify: verifier(fields.kind, MessageKind.Hello, allocator.size),
+    write: writer(fields) as (view : DataView, props: {[key in Props]: number}) => void,
+    read: reader(fields) as (view : DataView) => {[key in Props]: number},
+  };
+  return {
+    ...fields,
+    ...helpers,
+    size: allocator.size,
+  };
 })();
 
 export default HelloStruct;

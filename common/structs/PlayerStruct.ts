@@ -4,14 +4,25 @@ import { verifier, writer, reader } from "../helpers/structs";
 
 const PlayerStruct = (() => {
   const allocator = { size: 0 };
-  const id = allocUint32Field(allocator);
-  const x = allocFloat32Field(allocator);
-  const y = allocFloat32Field(allocator);
-  const hue = allocUint8Field(allocator);
-  const direction = allocFloat32Field(allocator);
-  const moving = allocUint8Field(allocator);
-  const size = allocator.size;
-  return { id, x, y, hue, direction, moving, size };
+  const fields = {
+    kind: allocUint8Field(allocator),
+    id: allocUint32Field(allocator),
+    x: allocFloat32Field(allocator),
+    y: allocFloat32Field(allocator),
+    direction: allocFloat32Field(allocator),
+    hue: allocUint8Field(allocator),
+    moving: allocUint8Field(allocator),
+  };
+  type Props = keyof typeof fields;  
+  const helpers = {
+    write: writer(fields) as (view : DataView, props: {[key in Props]: number}) => void,
+    read: reader(fields) as (view : DataView) => {[key in Props]: number},
+  };
+  return {
+    ...fields,
+    ...helpers,
+    size: allocator.size,
+  };
 })();
 
 export default PlayerStruct;

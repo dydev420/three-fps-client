@@ -4,11 +4,21 @@ import { verifier, writer, reader } from "../helpers/structs";
 
 const PlayerTurningStruct = (() => {
   const allocator = { size: 0 };
-  const kind = allocUint8Field(allocator);
-  const direction = allocFloat32Field(allocator);
-  const size = allocator.size;
-  const verify = verifier(kind, MessageKind.PlayerTurning, size);
-  return { kind, direction, size, verify }
+  const fields = {
+    kind : allocUint8Field(allocator),
+    direction: allocFloat32Field(allocator),
+  };
+  type Props = keyof typeof fields;  
+  const helpers = {
+    verify: verifier(fields.kind, MessageKind.PlayerTurning, allocator.size),
+    write: writer(fields) as (view : DataView, props: {[key in Props]: number}) => void,
+    read: reader(fields) as (view : DataView) => {[key in Props]: number},
+  };
+  return {
+    ...fields,
+    ...helpers,
+    size: allocator.size,
+  };
 })();
 
 export default PlayerTurningStruct;
