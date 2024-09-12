@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { PerspectiveCamera } from 'three';
 import Character from "../../characters/interfaces/Character";
 import MyPlayer from "../../characters/MyPlayer";
 import OnlinePlayer from "../../characters/OnlinePlayer";
@@ -7,11 +7,11 @@ import { Player } from '../../../server/common.mts';
 
 class PawnManager {
   game: Game;
-  camera: THREE.PerspectiveCamera;
+  camera: PerspectiveCamera;
   pawns: Map<number, Character>;
   myPawn: MyPlayer | undefined;
   
-  constructor(game: Game, camera: THREE.PerspectiveCamera) {
+  constructor(game: Game, camera: PerspectiveCamera) {
     this.game = game;
     this.camera = camera;
     this.pawns = new Map();

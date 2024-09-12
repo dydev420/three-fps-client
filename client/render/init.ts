@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { Scene, PerspectiveCamera, WebGLRenderer, WebGLRenderTarget, TextureLoader, PCFSoftShadowMap } from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { EffectComposer, Pass } from 'three/examples/jsm/postprocessing/EffectComposer.js'
@@ -20,10 +20,10 @@ import PawnManager from './pawn/PawnManager';
 import DebugManager from '../debug/DebugManager'
 
 
-let scene: THREE.Scene,
-  camera: THREE.PerspectiveCamera,
-  renderer: THREE.WebGLRenderer,
-  renderTarget: THREE.WebGLRenderTarget,
+let scene: Scene,
+  camera: PerspectiveCamera,
+  renderer: WebGLRenderer,
+  renderTarget: WebGLRenderTarget,
   composer: EffectComposer,
   controls: AvatarController,
   stats: Stats,
@@ -32,7 +32,7 @@ let scene: THREE.Scene,
   renderHeight: number,
   renderAspectRatio: number,
   gltfLoader: GLTFLoader,
-  textureLoader: THREE.TextureLoader,
+  textureLoader: TextureLoader,
   generalLoader: GeneralLoader,
   RAPIER: typeof Rapier,
   physicsWorld: Rapier.World,
@@ -51,27 +51,27 @@ export const initEngine = async () => {
   physicsObjects = [] // initializing physics objects array
 
   // rendering -> THREE.js
-  scene = new THREE.Scene()
+  scene = new Scene()
 
   renderWidth = window.innerWidth
   renderHeight = window.innerHeight
 
   renderAspectRatio = renderWidth / renderHeight
 
-  camera = new THREE.PerspectiveCamera(75, renderAspectRatio, 0.01, 1000)
+  camera = new PerspectiveCamera(75, renderAspectRatio, 0.01, 1000)
   camera.position.z = 5
 
-  renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer = new WebGLRenderer({ antialias: true })
   renderer.setSize(renderWidth, renderHeight)
   renderer.setPixelRatio(window.devicePixelRatio * 1.5)
 
   // shadow
   renderer.shadowMap.enabled = true
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap
+  renderer.shadowMap.type = PCFSoftShadowMap
 
   document.body.appendChild(renderer.domElement)
 
-  renderTarget = new THREE.WebGLRenderTarget(renderWidth, renderHeight, {
+  renderTarget = new WebGLRenderTarget(renderWidth, renderHeight, {
     samples: 8,
   })
   composer = new EffectComposer(renderer, renderTarget)
@@ -121,7 +121,7 @@ export const initEngine = async () => {
   // generalLoader = new GeneralLoader()
 
   gltfLoader = new GLTFLoader()
-  textureLoader= new THREE.TextureLoader()
+  textureLoader= new TextureLoader()
 
   renderTickManager.startLoop()
 }

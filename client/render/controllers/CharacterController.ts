@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { Mesh, PerspectiveCamera, Quaternion, Vector3 } from 'three';
 import Rapier, { RayColliderHit } from '@dimforge/rapier3d';
 import { RAPIER, usePhysics, useRenderSize, useScene } from '../init'
 import { useRenderer } from './../init'
@@ -15,15 +15,15 @@ import HeadBobController from './HeadBbController';
 
 
 // * local variables
-const quaternion_0 = new THREE.Quaternion()
-const quaternion_1 = new THREE.Quaternion()
-const vec3_0 = new THREE.Vector3()
-const vec3_1 = new THREE.Vector3()
+const quaternion_0 = new Quaternion()
+const quaternion_1 = new Quaternion()
+const vec3_0 = new Vector3()
+const vec3_1 = new Vector3()
 let ray_0: Rapier.Ray
 
 // * Responsible for controlling the character movement, rotation and physics
-class CharacterController extends THREE.Mesh {
-  camera: THREE.PerspectiveCamera
+class CharacterController extends Mesh {
+  camera: PerspectiveCamera
   inputManager: InputManager
   headBobController: HeadBobController
   heightController: HeightController
@@ -36,7 +36,7 @@ class CharacterController extends THREE.Mesh {
   physicsObject: PhysicsObject
   avatar: AvatarController
 
-  constructor(avatar: AvatarController, camera: THREE.PerspectiveCamera) {
+  constructor(avatar: AvatarController, camera: PerspectiveCamera) {
     super();
 
     // init position
@@ -119,7 +119,7 @@ class CharacterController extends THREE.Mesh {
     )
 
     if (groundUnderFootHit) {
-      const hitPoint = ray.pointAt(groundUnderFootHit.timeOfImpact) as THREE.Vector3
+      const hitPoint = ray.pointAt(groundUnderFootHit.timeOfImpact) as Vector3
       const distance = rayOrigin.y - hitPoint.y
       if (distance <= 0) {
         // * Grounded

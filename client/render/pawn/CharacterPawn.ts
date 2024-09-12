@@ -1,12 +1,11 @@
-import * as THREE from 'three';
-import { Vector3 } from "three";
+import { Vector3, Mesh } from "three";
 import { addPhysics, PhysicsObject } from '../physics/physics';
 import { _addCapsule, _removeCapsule } from '../controllers/utils/meshes';
 import { _calculateObjectSize } from '../controllers/utils/objects';
 
-class CharacterPawn extends THREE.Mesh {
-  position: THREE.Vector3;
-  capsule: THREE.Mesh;
+class CharacterPawn extends Mesh {
+  position:Vector3;
+  capsule: Mesh;
   // physics
   physicsObject: PhysicsObject;
   width: number;

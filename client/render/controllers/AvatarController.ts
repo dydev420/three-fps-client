@@ -1,16 +1,15 @@
-import * as THREE from 'three';
+import { Mesh, PerspectiveCamera } from 'three';
 import { _calculateObjectSize } from './utils/objects';
 import CharacterController from './CharacterController';
-import type { Game } from '../../game';
 
 // Responsible for controlling the avatar mesh and the character controller
 class AvatarController {
-  avatar: THREE.Mesh
+  avatar: Mesh
   characterController: CharacterController
   height: number
   width: number
 
-  constructor(avatar: THREE.Mesh, camera: THREE.PerspectiveCamera) {
+  constructor(avatar: Mesh, camera: PerspectiveCamera) {
     this.avatar = avatar
 
     const size = _calculateObjectSize(avatar)

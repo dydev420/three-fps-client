@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { Vector3 } from 'three';
 import { _calculateObjectSize } from '../render/controllers/utils/objects'
 import * as common from '../../server/common.mts';
 import type { Player} from '../../server/common.mts';
@@ -9,7 +9,7 @@ import Character from './interfaces/Character';
 class OnlinePlayer implements Character {
   isMoving2D: boolean;
   pawn: CharacterPawn;
-  position: THREE.Vector3;
+  position: Vector3;
   
   // mp states
   id: number;
@@ -17,7 +17,7 @@ class OnlinePlayer implements Character {
 
   constructor(player: Player) {
     // init position
-    this.position = new THREE.Vector3();
+    this.position = new Vector3();
     
     // Multiplayer states
     this.id = player.id;

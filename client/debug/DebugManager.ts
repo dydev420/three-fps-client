@@ -1,14 +1,14 @@
-import * as THREE from 'three';
+import { Scene } from 'three';
 import { Game } from "../game";
 import PlayerDebugBox from "./PlayerDebugBox";
 
 class DebugManager {
   selfUpdate: boolean;
-  scene: THREE.Scene;
+  scene: Scene;
   game: Game;
   playerBoxes: Map<number, PlayerDebugBox>;
 
-  constructor(scene: THREE.Scene, game: Game, selfUpdate: boolean = false) {
+  constructor(scene: Scene, game: Game, selfUpdate: boolean = false) {
     this.selfUpdate = selfUpdate;
     this.scene = scene;
     this.game = game;

@@ -1,5 +1,5 @@
+import { RepeatWrapping } from 'three';
 import { useGltfLoader, useTextureLoader } from '../init'
-import * as THREE from 'three';
 
 type LoaderProgress = ProgressEvent<EventTarget>
 
@@ -48,7 +48,7 @@ const _loadTexture = async (path: string) => {
       console.log(`Loading image from ${path} ...`, 100.0 * (progress.loaded / progress.total), '%')
   )
 
-  texture.wrapS = texture.wrapT = THREE.RepeatWrapping
+  texture.wrapS = texture.wrapT = RepeatWrapping
 
   return texture
 }

@@ -1,9 +1,9 @@
-import * as THREE from 'three';
+import { Mesh } from 'three';
 import Rapier from '@dimforge/rapier3d'
 import { RAPIER, usePhysics, usePhysicsObjects } from '../init'
 
 export type PhysicsObject = {
-  mesh: THREE.Mesh
+  mesh: Mesh
   collider: Rapier.Collider
   rigidBody: Rapier.RigidBody
   fn?: Function
@@ -11,7 +11,7 @@ export type PhysicsObject = {
 }
 
 export const addPhysics = (
-  mesh: THREE.Mesh,
+  mesh: Mesh,
   rigidBodyType: string,
   autoAnimate: boolean = true, // update the mesh's position and quaternion based on the physics world every frame
   postPhysicsFn?: Function,

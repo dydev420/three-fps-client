@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { ArrowHelper, BoxGeometry, Mesh, Color, MeshStandardMaterial, Scene, Vector3 } from 'three';
 import DebugBox from "./interfaces/DebugBox";
 import * as common from '../../server/common.mts';
 
@@ -6,10 +6,10 @@ class PlayerDebugBox implements DebugBox {
   selfUpdate: boolean;
   id: number;
   player: common.Player;
-  geometry: THREE.BoxGeometry;
-  material: THREE.MeshStandardMaterial;
-  mesh: THREE.Mesh;
-  arrow: THREE.ArrowHelper | undefined;
+  geometry: BoxGeometry;
+  material: MeshStandardMaterial;
+  mesh: Mesh;
+  arrow: ArrowHelper | undefined;
 
   constructor(player: common.Player, id: number, selfUpdate: boolean = false) {
     this.selfUpdate = selfUpdate;
@@ -17,14 +17,14 @@ class PlayerDebugBox implements DebugBox {
     this.id = id;
 
     // three js stuff
-    this.geometry = new THREE.BoxGeometry(1, 1, 1);
-    this.material = new THREE.MeshStandardMaterial({
-      color: new THREE.Color().setHSL(player.hue/360, 0.8, 0.5),
+    this.geometry = new BoxGeometry(1, 1, 1);
+    this.material = new MeshStandardMaterial({
+      color: new Color().setHSL(player.hue/360, 0.8, 0.5),
     })
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
+    this.mesh = new Mesh(this.geometry, this.material);
   }
 
-  renderInScene(scene: THREE.Scene) {
+  renderInScene(scene: Scene) {
     if(this.mesh) {
       scene.add(this.mesh);
     }
@@ -40,7 +40,7 @@ class PlayerDebugBox implements DebugBox {
     }
   }
 
-  updateArrow(player: common.Player, scene: THREE.Scene) {
+  updateArrow(player: common.Player, scene: Scene) {
     if(this.arrow) {
       this.arrow.dispose();
       scene.remove(this.arrow);
@@ -49,19 +49,19 @@ class PlayerDebugBox implements DebugBox {
     if(player) {
       const forwardDir = common.vec3D(common.getForwardDir(player));
       const playerPosition = common.vec3D(player.position);
-      const forwardVector = new THREE.Vector3(forwardDir.x, forwardDir.y, forwardDir.z);
-      const origin = new THREE.Vector3(
+      const forwardVector = new Vector3(forwardDir.x, forwardDir.y, forwardDir.z);
+      const origin = new Vector3(
         playerPosition.x,
         playerPosition.y,
         playerPosition.z,
       );
 
-      this.arrow = new THREE.ArrowHelper(forwardVector, origin, 3, 'purple')
+      this.arrow = new ArrowHelper(forwardVector, origin, 3, 'purple')
       scene.add(this.arrow);
     }
   }
   
-  update(scene: THREE.Scene, deltaTime: number): void {
+  update(scene: Scene, deltaTime: number): void {
     if(this.player) {
       // only call player physics update if selfUpdating
       // (use selfUpdating when there is no real network pawn controller in the scene)
@@ -78,7 +78,7 @@ class PlayerDebugBox implements DebugBox {
     }
   };
 
-  delete(scene: THREE.Scene): void {
+  delete(scene: Scene): void {
     this.geometry.dispose();
     this.material.dispose();
     scene.remove(this.mesh);

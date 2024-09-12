@@ -1,10 +1,10 @@
-import * as THREE from 'three';
+import { Vector3 } from 'three';
 import type { Player } from '../../../server/common.mts';
 import CharacterPawn from '../../render/pawn/CharacterPawn';
 
 interface Character {
   pawn: CharacterPawn;
-  position: THREE.Vector3;
+  position: Vector3;
   
   // mp states
   id: number;

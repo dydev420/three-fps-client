@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { AmbientLight, BoxGeometry, Color, DirectionalLight, DirectionalLightHelper, DoubleSide, Mesh, MeshPhysicalMaterial, PlaneGeometry, Vector3 } from 'three'
 import {
   addPass,
   useCamera,
@@ -31,18 +31,18 @@ const startApp = async () => {
   const camera = useCamera()
   camera.position.x += 10
   camera.position.y += 10
-  camera.lookAt(new THREE.Vector3(0))
+  camera.lookAt(new Vector3(0))
   const gui = useGui()
   // const { width, height } = useRenderSize()
 
-  const dirLight = new THREE.DirectionalLight('#ffffff', 1)
+  const dirLight = new DirectionalLight('#ffffff', 1)
   dirLight.position.y += 1
   dirLight.position.x += 0.5
 
-  const dirLightHelper = new THREE.DirectionalLightHelper(dirLight)
+  const dirLightHelper = new DirectionalLightHelper(dirLight)
   // dirLight.add(dirLightHelper)
 
-  const ambientLight = new THREE.AmbientLight('#ffffff', 0.5)
+  const ambientLight = new AmbientLight('#ffffff', 0.5)
   scene.add(dirLight, ambientLight)
 
 
@@ -54,13 +54,13 @@ const startApp = async () => {
     const planeHeight = 100
 
     // * Mesh
-    const geometry = new THREE.PlaneGeometry(planeWidth, planeHeight)
-    const material = new THREE.MeshPhysicalMaterial({
+    const geometry = new PlaneGeometry(planeWidth, planeHeight)
+    const material = new MeshPhysicalMaterial({
       color: '#333',
-      side: THREE.DoubleSide,
+      side: DoubleSide,
       // wireframe: true,
     })
-    const plane = new THREE.Mesh(geometry, material);
+    const plane = new Mesh(geometry, material);
     plane.position.y -= 1.5;
 
     // * Physics
@@ -85,17 +85,17 @@ const startApp = async () => {
 
   _addGroundMesh()
 
-  const _addCubeMesh = (pos: THREE.Vector3) => {
+  const _addCubeMesh = (pos: Vector3) => {
     // * Settings
     const size = 1;
 
     // * Mesh
-    const geometry = new THREE.BoxGeometry(size, size, size)
-    const material = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color().setHex(Math.min(Math.random() + 0.15, 1) * 0xffffff),
-      side: THREE.DoubleSide,
+    const geometry = new BoxGeometry(size, size, size)
+    const material = new MeshPhysicalMaterial({
+      color: new Color().setHex(Math.min(Math.random() + 0.15, 1) * 0xffffff),
+      side: DoubleSide,
     })
-    const cube = new THREE.Mesh(geometry, material)
+    const cube = new Mesh(geometry, material)
 
     cube.position.copy(pos)
     cube.position.y += 2
@@ -115,7 +115,7 @@ const startApp = async () => {
   // const NUM_CUBES = 0
   for (let i = 0; i < NUM_CUBES; i++) {
     _addCubeMesh(
-      new THREE.Vector3((Math.random() - 0.5) * WORLD_WIDTH, 10 + i * 5, (Math.random() - 0.5) * WORLD_HEIGHT)
+      new Vector3((Math.random() - 0.5) * WORLD_WIDTH, 10 + i * 5, (Math.random() - 0.5) * WORLD_HEIGHT)
     )
   }
 

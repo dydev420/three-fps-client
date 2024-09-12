@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { Quaternion, Vector3 } from 'three'
 import {
   useComposer,
   useControls,
@@ -86,8 +86,8 @@ class TickManager extends EventTarget {
         if (autoAnimate) {
           const mesh = po.mesh
           const collider = po.collider
-          mesh.position.copy(collider.translation() as THREE.Vector3)
-          mesh.quaternion.copy(collider.rotation() as THREE.Quaternion)
+          mesh.position.copy(collider.translation() as Vector3)
+          mesh.quaternion.copy(collider.rotation() as Quaternion)
         }
 
         const fn = po.fn

@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+import { CapsuleGeometry, Mesh, MeshStandardMaterial } from 'three'
 import { RAPIER, usePhysics, usePhysicsObjects, useScene, useTick } from '../../init'
 import { addPhysics } from '../../physics/physics'
 
@@ -9,9 +9,9 @@ const _addCapsule = (
   radialSegments: number
 ) => {
   const scene = useScene()
-  const geometry = new THREE.CapsuleGeometry(radius, height, capSegments, radialSegments)
-  const material = new THREE.MeshStandardMaterial({ color: 0xd60019, transparent: true })
-  const capsule = new THREE.Mesh(geometry, material)
+  const geometry = new CapsuleGeometry(radius, height, capSegments, radialSegments)
+  const material = new MeshStandardMaterial({ color: 0xd60019, transparent: true })
+  const capsule = new Mesh(geometry, material)
   capsule.position.y += height / 2 + radius
 
   capsule.position.y += 10
@@ -21,7 +21,7 @@ const _addCapsule = (
   return capsule
 }
 
-const _removeCapsule = (mesh : THREE.Mesh) => {
+const _removeCapsule = (mesh : Mesh) => {
   const scene = useScene()
  
   // TODO: dispose other mesh components too

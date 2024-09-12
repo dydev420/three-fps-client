@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import { PerspectiveCamera, Vector3 } from 'three';
 import { _calculateObjectSize } from '../render/controllers/utils/objects'
 import * as common from '../../server/common.mts';
 import type { Player} from '../../server/common.mts';
@@ -7,22 +7,22 @@ import Character from './interfaces/Character';
 
 // * Responsible for controlling the character movement, rotation and physics
 class MyPlayer implements Character {
-  camera: THREE.PerspectiveCamera | undefined;
+  camera: PerspectiveCamera | undefined;
   // inputManager: InputManager;
   phi: number;
   theta: number;
   objects: any;
   isMoving2D: boolean;
   pawn: CharacterPawn;
-  position: THREE.Vector3;
+  position:Vector3;
   
   // mp states
   id: number;
   player: Player | undefined;
 
-  constructor(player: Player, camera?: THREE.PerspectiveCamera) {
+  constructor(player: Player, camera?: PerspectiveCamera) {
     // init position
-    this.position = new THREE.Vector3();
+    this.position = new Vector3();
     
     // Multiplayer states
     this.id = player.id;
@@ -55,7 +55,7 @@ class MyPlayer implements Character {
       return;
     }
     const forwardDir = common.getForwardDir(this.player);
-    const forwardVector = new THREE.Vector3(forwardDir.x, 0, forwardDir.y);
+    const forwardVector = new Vector3(forwardDir.x, 0, forwardDir.y);
     
     this.camera.position.copy(this.position);
     const cameraTarget = this.camera.position.clone();

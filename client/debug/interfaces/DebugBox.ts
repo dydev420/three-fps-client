@@ -1,12 +1,12 @@
-import * as THREE from 'three';
+import { Mesh, Scene } from 'three';
 import { Player } from '../../../server/common.mts';
 
 interface DebugBox {
   selfUpdate: boolean;
-  mesh: THREE.Mesh;
+  mesh: Mesh;
   player: Player;
-  update: (scene: THREE.Scene ,deltaTime: number) => void;
-  delete: (scene: THREE.Scene) => void;
+  update: (scene: Scene ,deltaTime: number) => void;
+  delete: (scene: Scene) => void;
 }
 
 export default DebugBox;
