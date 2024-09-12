@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { WebSocketServer, WebSocket } from "ws";
 import { Vector2 } from "./lib/vector.mjs";
-import * as common from '../common/common.mjs';
+import * as common from '../common/index.mjs';
 import { SERVER_PORT, SERVER_FPS, WORLD_WIDTH, WORLD_HEIGHT, } from '../common/helpers/constants';
 import { Player, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';

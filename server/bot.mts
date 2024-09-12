@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import * as common from '../common/common.mjs';
+import * as common from '../common/index.mjs';
 import { SERVER_PORT, WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SPEED } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import { Vector2 } from "./lib/vector.mjs";

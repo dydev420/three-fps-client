@@ -1,6 +1,6 @@
 import { ArrowHelper, BoxGeometry, Mesh, Color, MeshStandardMaterial, Scene, Vector3 } from 'three';
 import DebugBox from "./interfaces/DebugBox";
-import * as common from '../../common/common.mjs'
+import * as common from '../../common/index.mjs'
 import type { Player } from '../../common/types';
 
 

@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 import { _calculateObjectSize } from '../render/controllers/utils/objects'
-import * as common from '../../common/common.mts';
+import * as common from '../../common/index.mts';
 import type { Player} from '../../common/types';
 import CharacterPawn from '../render/pawn/CharacterPawn';
 import Character from './interfaces/Character';

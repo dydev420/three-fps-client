@@ -1,6 +1,6 @@
 // import { WebSocket } from "ws";
 import { Vector2 } from "../server/lib/vector.mts";
-import * as common from "../common/common.mts";
+import * as common from "../common/index.mts";
 import { Player } from "../common/types";
 import PingPongStruct from "../common/structs/PingPongStruct";
 import HelloStruct from "../common/structs/HelloStruct";
