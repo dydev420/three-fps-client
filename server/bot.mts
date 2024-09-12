@@ -3,7 +3,7 @@ import * as common from '../common/common.mjs';
 import { SERVER_PORT, WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SPEED } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import { Vector2 } from "./lib/vector.mjs";
-import BatchHeaderStruct from "../common/structs/HelloStruct copy";
+import BatchHeaderStruct from "../common/structs/BatchHeaderStruct";
 import PlayerStruct from "../common/structs/PlayerStruct";
 import HelloStruct from "../common/structs/HelloStruct";
 import PlayerMovingStruct from "../common/structs/PlayerMovingStruct";

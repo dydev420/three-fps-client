@@ -3,7 +3,7 @@ import * as common from '../common/common.mjs';
 import { WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SIZE } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
-import BatchHeaderStruct from '../common/structs/HelloStruct copy';
+import BatchHeaderStruct from '../common/structs/BatchHeaderStruct';
 import PlayerLeftStruct from '../common/structs/PlayerLeftStruct';
 import PlayerStruct from '../common/structs/PlayerStruct';
 import HelloStruct from '../common/structs/HelloStruct';

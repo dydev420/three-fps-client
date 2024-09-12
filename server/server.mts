@@ -9,7 +9,7 @@ import PingPongStruct from '../common/structs/PingPongStruct';
 import app from "./app.mts";
 import PlayerMovingStruct from '../common/structs/PlayerMovingStruct';
 import PlayerTurningStruct from '../common/structs/PlayerTurningStruct';
-import BatchHeaderStruct from '../common/structs/HelloStruct copy';
+import BatchHeaderStruct from '../common/structs/BatchHeaderStruct';
 import PlayerStruct from '../common/structs/PlayerStruct';
 import PlayerLeftStruct from '../common/structs/PlayerLeftStruct';
 import HelloStruct from '../common/structs/HelloStruct';

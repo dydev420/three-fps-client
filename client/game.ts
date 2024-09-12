@@ -4,7 +4,7 @@ import * as common from "../common/common.mts";
 import { Player } from "../common/types";
 import PingPongStruct from "../common/structs/PingPongStruct";
 import HelloStruct from "../common/structs/HelloStruct";
-import BatchHeaderStruct from "../common/structs/HelloStruct copy";
+import BatchHeaderStruct from "../common/structs/BatchHeaderStruct";
 import PlayerStruct from "../common/structs/PlayerStruct";
 import PlayerLeftStruct from "../common/structs/PlayerLeftStruct";
 
