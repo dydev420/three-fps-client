@@ -60,7 +60,7 @@ export function fMod(a: number, b: number) {
   return (a % b + b) % b;
 }
 
-export function updatePlayer(player: Player, deltaTime: number) {
+export function updateEnginePlayer(player: Player, deltaTime: number) {
   const controlVelocity = new Vector2(0);
   let angularVelocity = 0.0;
   if (checkDirectionMask(player.moving, Moving.MovingForward)) {

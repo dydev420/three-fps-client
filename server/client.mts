@@ -1,5 +1,5 @@
 import { Vector2 } from './lib/vector.mjs';
-import { getConnectionUrl, updatePlayer } from '../common/index.mjs';
+import { getConnectionUrl, updateEnginePlayer } from '../common/index.mjs';
 import { WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SIZE } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
@@ -198,7 +198,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
       // Player game loop
       players.forEach((player) => {
         // Update all player physics
-        updatePlayer(player, deltaTime);
+        updateEnginePlayer(player, deltaTime);
         
         if(player.id !== me?.id ) {
           drawPlayerBody(ctx, player);

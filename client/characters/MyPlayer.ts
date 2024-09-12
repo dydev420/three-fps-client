@@ -1,6 +1,6 @@
 import { PerspectiveCamera, Vector3 } from 'three';
 import { _calculateObjectSize } from '../render/controllers/utils/objects'
-import { getForwardDir, updatePlayer } from '../../common/index.mts';
+import { getForwardDir, updateEnginePlayer } from '../../common/index.mts';
 import type { Player} from '../../common/types';
 import CharacterPawn from '../render/pawn/CharacterPawn';
 import Character from './interfaces/Character';
@@ -65,7 +65,7 @@ class MyPlayer implements Character {
 
   updatePosition(deltaTime: number) {
     if(this.player) {      
-      updatePlayer(this.player, deltaTime);
+      updateEnginePlayer(this.player, deltaTime);
       this.position.x = this.player.position.x;
       this.position.z = this.player.position.y;
 

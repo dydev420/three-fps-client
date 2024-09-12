@@ -1,5 +1,5 @@
 import { WebSocket } from "ws";
-import { updatePlayer } from '../common/index.mjs';
+import { updateEnginePlayer } from '../common/index.mjs';
 import { SERVER_PORT, WORLD_WIDTH, WORLD_HEIGHT, PLAYER_SPEED } from '../common/helpers/constants';
 import { Player, Moving, MessageKind } from "../common/types";
 import { Vector2 } from "./lib/vector.mjs";
@@ -87,7 +87,7 @@ function createBot(): Bot {
     bot.previousTimestamp = timestamp;
     
     if(bot.me !== undefined ) {
-      updatePlayer(bot.me, deltaTime);
+      updateEnginePlayer(bot.me, deltaTime);
     }
     // Bot loop
     if (bot.timeoutBeforeTurn !== undefined) {

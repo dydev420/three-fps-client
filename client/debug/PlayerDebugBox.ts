@@ -1,6 +1,6 @@
 import { ArrowHelper, BoxGeometry, Mesh, Color, MeshStandardMaterial, Scene, Vector3 } from 'three';
 import DebugBox from "./interfaces/DebugBox";
-import { getForwardDir, updatePlayer, vec3D } from '../../common/index.mjs'
+import { getForwardDir, updateEnginePlayer, vec3D } from '../../common/index.mjs'
 import type { Player } from '../../common/types';
 
 
@@ -68,7 +68,7 @@ class PlayerDebugBox implements DebugBox {
       // only call player physics update if selfUpdating
       // (use selfUpdating when there is no real network pawn controller in the scene)
       if(this.selfUpdate) {
-        updatePlayer(this.player, deltaTime);
+        updateEnginePlayer(this.player, deltaTime);
       }
 
       // update mesh immediately after updating player on engine

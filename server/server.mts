@@ -2,7 +2,7 @@ import 'dotenv/config';
 
 import { WebSocketServer, WebSocket } from "ws";
 import { Vector2 } from "./lib/vector.mjs";
-import { applyDirectionMask, updatePlayer } from '../common/index.mts';
+import { applyDirectionMask, updateEnginePlayer } from '../common/index.mts';
 import { SERVER_PORT, SERVER_FPS, WORLD_WIDTH, WORLD_HEIGHT, } from '../common/helpers/constants';
 import { Player, MessageKind } from "../common/types";
 import PingPongStruct from '../common/structs/PingPongStruct';
@@ -358,7 +358,7 @@ const tick = () => {
   }
   
   // Update Engine tick
-  players.forEach((player) => updatePlayer(player, deltaTime));  
+  players.forEach((player) => updateEnginePlayer(player, deltaTime));  
   
   // returning pings
   pingIds.forEach((timestamp, id) => {
