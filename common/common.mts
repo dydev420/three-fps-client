@@ -1,7 +1,17 @@
 import * as ws from "ws";
 import { Vector2, Vector3 } from "../server/lib/vector.mjs";
 import { Player, Moving, Field, MessageKind,  } from './types';
-
+import {
+  allocFloat32Field,
+  allocUint16Field,
+  allocUint32Field,
+  allocUint8Field
+} from './helpers/allocators';
+import {
+  verifier,
+  structWriter,
+  structReader,
+} from './helpers/structs';
 
 export const SERVER_PORT = 6969;
 export const SERVER_FPS = 60;
@@ -36,89 +46,6 @@ export function checkDirectionMask(moving: number, dir: number): number {
 export function applyDirectionMask(moving: number, dir: number, start: number = 0): number {
   return start ? moving|(1<<dir) : moving&~(1<<dir);
 }
-
-const UINT8_SIZE = 1;
-const UINT16_SIZE = 2;
-const UINT32_SIZE = 4;
-const FLOAT32_SIZE = 4;
-
-function allocUint8Field(allocator: { size: number }): Field {
-  const offset = allocator.size;
-  const size = UINT8_SIZE;
-  allocator.size += size;
-  return {
-    offset,
-    size,
-    read: (view) => view.getUint8(offset),
-    write: (view, value) => view.setUint8(offset, value),
-  };
-}
-
-function allocUint16Field(allocator: { size: number }): Field {
-  const offset = allocator.size;
-  const size = UINT16_SIZE;
-  allocator.size += size;
-  return {
-    offset,
-    size,
-    read: (view) => view.getUint16(offset),
-    write: (view, value) => view.setUint16(offset, value),
-  };
-}
-
-function allocUint32Field(allocator: { size: number }): Field {
-  const offset = allocator.size;
-  const size = UINT32_SIZE;
-  allocator.size += size;
-  return {
-    offset,
-    size,
-    read: (view) => view.getUint32(offset, true),
-    write: (view, value) => view.setUint32(offset, value, true),
-  };
-}
-
-function allocFloat32Field(allocator: { size: number }): Field {
-  const offset = allocator.size;
-  const size = FLOAT32_SIZE;
-  allocator.size += size;
-  return {
-    offset,
-    size,
-    read: (view) => view.getFloat32(offset, true),
-    write: (view, value) => view.setFloat32(offset, value, true),
-  };
-}
-
-function verifier(kindField: Field, kind: number, size: number ): (view: DataView) => boolean {
-  return (view: DataView) => view.byteLength === size && kindField.read(view) === kind;
-} 
-
-function structWriter(fields: {[key: string]: Field}) {
-  return (view : DataView, props: {[key: string]: number}) => {
-    for (const [key, value] of Object.entries(props)) {
-      if(fields[key]) {
-        fields[key].write(view, props[key]);
-      }
-    }
-  };
-}
-
-function structReader(fields: {[key: string]: Field}) {
-  return (view : DataView,) => {
-    const props: {[x: string]: number | undefined} = {};
-    for (const key of Object.keys(fields)) {
-      if(fields[key]) {
-        props[key] = fields[key].read(view);
-      } else {
-        props[key] = undefined;
-      }
-    }
-    return props;
-  };
-}
-
-
 
 export const PingPongStruct = (() => {
   const allocator = { size: 0 };
