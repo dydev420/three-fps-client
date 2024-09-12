@@ -294,8 +294,10 @@ const tick = () => {
   // Notifying about who left
   leftIds.forEach((leftId) => {
     const view = new DataView(new ArrayBuffer(PlayerLeftStruct.size));
-    PlayerLeftStruct.kind.write(view, MessageKind.PlayerLeft);
-    PlayerLeftStruct.id.write(view, leftId);
+    PlayerLeftStruct.write(view, {
+      kind: MessageKind.PlayerLeft,
+      id: leftId,
+    });
     players.forEach((player) => {
       player.ws.send(view);
     });
