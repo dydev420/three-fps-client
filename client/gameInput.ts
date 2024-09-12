@@ -82,8 +82,10 @@ export function addInputListeners(game: Game) {
     game.me.direction += dx;
     
     const view = new DataView(new ArrayBuffer(PlayerTurningStruct.size));
-    PlayerTurningStruct.kind.write(view, MessageKind.PlayerTurning);
-    PlayerTurningStruct.direction.write(view, game.me.direction);
+    PlayerTurningStruct.write(view, {
+      kind: MessageKind.PlayerTurning,
+      direction: game.me.direction,
+    });
     game.ws.send(view);
   });
 
