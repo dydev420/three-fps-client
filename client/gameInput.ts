@@ -44,6 +44,7 @@ export function addInputListeners(game: Game) {
           kind: MessageKind.PlayerMoving,
           start: 1,
           direction,
+          seqId: game.me.seqId++,
         });
         game.ws.send(view);
       }
@@ -62,6 +63,7 @@ export function addInputListeners(game: Game) {
           kind: MessageKind.PlayerMoving,
           start: 0,
           direction,
+          seqId: game.me.seqId++,
         });
         game.ws.send(view);
       }
@@ -88,6 +90,7 @@ export function addInputListeners(game: Game) {
     PlayerTurningStruct.write(view, {
       kind: MessageKind.PlayerTurning,
       direction: game.me.direction,
+      seqId: game.me.seqId++,
     });
     game.ws.send(view);
   });

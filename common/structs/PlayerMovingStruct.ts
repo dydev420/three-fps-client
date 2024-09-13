@@ -8,6 +8,7 @@ const PlayerMovingStruct = (() => {
     kind: allocUint8Field(allocator),
     direction: allocUint8Field(allocator),
     start: allocUint8Field(allocator),
+    seqId: allocUint8Field(allocator),
   };
   type Props = keyof typeof fields;  
   const helpers = {

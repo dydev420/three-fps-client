@@ -7,6 +7,7 @@ const PlayerTurningStruct = (() => {
   const fields = {
     kind : allocUint8Field(allocator),
     direction: allocFloat32Field(allocator),
+    seqId: allocUint8Field(allocator),
   };
   type Props = keyof typeof fields;  
   const helpers = {

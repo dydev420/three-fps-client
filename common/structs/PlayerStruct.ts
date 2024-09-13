@@ -11,6 +11,7 @@ const PlayerStruct = (() => {
     direction: allocFloat32Field(allocator),
     hue: allocUint8Field(allocator),
     moving: allocUint8Field(allocator),
+    seqId: allocUint8Field(allocator),
   };
   type Props = keyof typeof fields;  
   const helpers = {

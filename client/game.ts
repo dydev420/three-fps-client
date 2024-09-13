@@ -51,6 +51,7 @@ export function createGame(): Game {
             helloMessage.x,
             helloMessage.y,
           ),
+          seqId: helloMessage.seqId,
         };
         players.set(game.me.id, game.me);
         console.log('Connected Players', game.me);

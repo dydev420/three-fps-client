@@ -100,6 +100,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
               helloMessage.x,
               helloMessage.y,
             ),
+            seqId: helloMessage.seqId,
           };
           players.set(me.id, me);
           console.log('Connected Players', me);
@@ -253,6 +254,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
           kind: MessageKind.PlayerMoving,
           direction,
           start: 1,
+          seqId: me.seqId++,
         });
         
         ws.send(view);
@@ -272,6 +274,7 @@ function drawPlayerOutline(ctx: CanvasRenderingContext2D, player: Player) {
           kind: MessageKind.PlayerMoving,
           direction,
           start: 0,
+          seqId: me.seqId++,
         });
         ws.send(view);
       }

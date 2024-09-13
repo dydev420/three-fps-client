@@ -113,6 +113,7 @@ interface PlayerOnServer extends Player {
   newDirection: number,
   newMoving: number,
   turned: boolean,
+  newSeqId: number,
 }
 
 const players = new Map<number, PlayerOnServer>()
@@ -145,6 +146,8 @@ wss.on('connection', (ws) => {
     newMoving: 0,
     newDirection: 0,
     turned: false,
+    seqId: 0,
+    newSeqId: 0,
   };
 
   console.log(`** Client id:${id} Connected.`);
@@ -169,8 +172,10 @@ wss.on('connection', (ws) => {
         const { direction, start } = PlayerMovingStruct.read(view);
         player.newMoving = applyDirectionMask(player.newMoving, direction, start)
       } else if (PlayerTurningStruct.verify(view)) {
-        player.newDirection = PlayerTurningStruct.direction.read(view);
+        const { direction, seqId } = PlayerTurningStruct.read(view);
+        player.newDirection = direction;
         player.turned = true;
+        player.newSeqId = seqId;
       } else if (PingPongStruct.verifyPing(view)) {
         pingIds.set(id, PingPongStruct.timestamp.read(view));
       } else {
@@ -229,6 +234,7 @@ const tick = () => {
         direction: player.direction,
         moving: player.moving,
         hue: Math.floor(player.hue/360*256),
+        seqId: player.seqId,
       });
     
       playerIndex++;
@@ -246,6 +252,7 @@ const tick = () => {
           y: joinedPlayer.position.y,
           direction: joinedPlayer.direction,
           hue: joinedPlayer.hue/360*256,
+          seqId: joinedPlayer.seqId,
         });
         
         // Hello
@@ -278,6 +285,7 @@ const tick = () => {
           direction: otherPlayer.direction,
           moving: otherPlayer.moving,
           hue: Math.floor(otherPlayer.hue/360*256),
+          seqId: otherPlayer.seqId,
         });
         
         playerIndex++;
@@ -313,6 +321,7 @@ const tick = () => {
       if (
           player.newMoving !== player.moving
           || (player.turned && player.newDirection !== player.direction)
+          || (player.newSeqId !== player.seqId)
         ) {
         movedCount++;
       } else if (player.turned) {
@@ -331,8 +340,12 @@ const tick = () => {
         if (player.newMoving !== player.moving) {
           player.moving = player.newMoving;
           moved = true;
-        } else if (player.turned && player.newDirection !== player.direction) {
+        } else if (
+          (player.turned && player.newDirection !== player.direction)
+          || (player.newSeqId !== player.seqId)
+        ) {
           player.direction = player.newDirection;
+          player.seqId = player.newSeqId;
           moved = true;
         }
     
@@ -346,6 +359,7 @@ const tick = () => {
             direction: player.direction,
             moving: player.moving,
             hue: Math.floor(player.hue/360*256),
+            seqId: player.seqId,
           });
           movedIndex++;
         }

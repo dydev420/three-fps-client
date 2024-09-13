@@ -53,6 +53,7 @@ function createBot(): Bot {
             helloMessage.x,
             helloMessage.y,
           ),
+          seqId: helloMessage.seqId,
         };
         // Start bot loop
         turn();
@@ -117,6 +118,7 @@ function createBot(): Bot {
             kind: MessageKind.PlayerMoving,
             direction,
             start: 0,
+            seqId: bot.me.seqId,
           });
           bot.ws.send(view);
         }
@@ -131,6 +133,7 @@ function createBot(): Bot {
         kind: MessageKind.PlayerMoving,
         direction,
         start: 1,
+        seqId: bot.me.seqId,
       });
       bot.ws.send(view);
     }

@@ -13,6 +13,7 @@ export interface Player {
   direction: number,
   moving: number,
   hue: number,
+  seqId: number,
 }
 
 export interface Field {
