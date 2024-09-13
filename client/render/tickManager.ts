@@ -6,6 +6,7 @@ import {
   useGame,
   usePawnManager,
   usePhysics,
+  usePhysicsDebugRenderer,
   usePhysicsObjects,
   useRenderer,
   useStats,
@@ -58,7 +59,8 @@ class TickManager extends EventTarget {
     // const scene = useScene()
     // const camera = useCamera()
     const physics = usePhysics()
-    const physicsObjects = usePhysicsObjects()
+    const physicsObjects = usePhysicsObjects();
+    const physicsDebug = usePhysicsDebugRenderer();
     const controls = useControls()
     const stats = useStats()
     const game = useGame()
@@ -77,7 +79,9 @@ class TickManager extends EventTarget {
       const deltaTimeCapped = Math.min(Math.max(this.deltaTime, 0), 100)
 
       // physics
-      physics.step()
+      physics.step();
+
+      physicsDebug.update();
 
       for (let i = 0; i < physicsObjects.length; i++) {
         const po = physicsObjects[i]

@@ -14,6 +14,7 @@ import { _addCapsule } from './controllers/utils/meshes'
 import GeneralLoader from './loaders/generalLoader';
 import InitRapier from './physics/RAPIER'
 import { PhysicsObject } from './physics/physics'
+import PhysicsDebugRenderer from './physics/PhysicsDebugRenderer';
 import { GRAVITY } from './physics/utils/constants'
 import { createGame, type Game } from '../game'
 import PawnManager from './pawn/PawnManager';
@@ -37,6 +38,7 @@ let scene: Scene,
   RAPIER: typeof Rapier,
   physicsWorld: Rapier.World,
   physicsObjects: Array<PhysicsObject>,
+  physicsDebugRenderer:  PhysicsDebugRenderer,
   game: Game,
   pawnManager: PawnManager,
   debugManager: DebugManager;
@@ -52,6 +54,8 @@ export const initEngine = async () => {
 
   // rendering -> THREE.js
   scene = new Scene()
+
+  physicsDebugRenderer = new PhysicsDebugRenderer(scene, physicsWorld);
 
   renderWidth = window.innerWidth
   renderHeight = window.innerHeight
@@ -167,5 +171,6 @@ export const useTextureLoader = () => textureLoader
 export const useLoader = () => generalLoader
 export const usePhysics = () => physicsWorld
 export const usePhysicsObjects = () => physicsObjects
+export const usePhysicsDebugRenderer = () => physicsDebugRenderer
 
 export { RAPIER }
