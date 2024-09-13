@@ -49,6 +49,7 @@ class CharacterPawn extends Mesh {
 
   delete() {
     _removeCapsule(this.capsule);
+    this.physicsObject.remove();
   }
 }
 

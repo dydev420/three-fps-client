@@ -7,7 +7,8 @@ export type PhysicsObject = {
   collider: Rapier.Collider
   rigidBody: Rapier.RigidBody
   fn?: Function
-  autoAnimate: boolean
+  autoAnimate: boolean,
+  remove: Function,
 }
 
 export const addPhysics = (
@@ -68,7 +69,11 @@ export const addPhysics = (
   // * Responsible for collision detection
   const collider = physics.createCollider(colliderDesc, rigidBody)
 
-  const physicsObject: PhysicsObject = { mesh, collider, rigidBody, fn: postPhysicsFn, autoAnimate }
+  const remove = () => {
+    physics.removeRigidBody(rigidBody);
+  }
+
+  const physicsObject: PhysicsObject = { mesh, collider, rigidBody, fn: postPhysicsFn, autoAnimate, remove }
 
   physicsObjects.push(physicsObject)
 
