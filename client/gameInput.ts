@@ -2,7 +2,6 @@ import { Vector2 } from "../server/lib/vector.mts";
 import * as common from "../common/index.mts";
 import { Player, Moving, MessageKind } from "../common/types";
 
-// import { useGame } from "./render/init";
 import type { Game } from "./game";
 import PlayerMovingStruct from "../common/structs/PlayerMovingStruct";
 import PlayerTurningStruct from "../common/structs/PlayerTurningStruct";

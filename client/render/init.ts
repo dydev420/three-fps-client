@@ -14,7 +14,6 @@ import GeneralLoader from './loaders/generalLoader';
 import InitRapier from './physics/RAPIER'
 import { PhysicsObject } from './physics/physics'
 import { GRAVITY } from './physics/utils/constants'
-import { createGame, type Game } from '../game'
 
 
 let scene: Scene,
@@ -33,8 +32,7 @@ let scene: Scene,
   generalLoader: GeneralLoader,
   RAPIER: typeof Rapier,
   physicsWorld: Rapier.World,
-  physicsObjects: Array<PhysicsObject>,
-  game: Game;
+  physicsObjects: Array<PhysicsObject>;
 
 
 export const initEngine = async () => {
@@ -102,11 +100,6 @@ export const initEngine = async () => {
   // controls
   const capsule = _addCapsule(1.5, 0.5, 10, 10)
 
-  console.log('Game', game);
-  
-  // Multiplayer client
-  game = createGame();
-
   // advanced controls
   controls = new AvatarController(capsule, camera);
 
@@ -134,9 +127,6 @@ export const useRenderTarget = () => renderTarget
 export const useComposer = () => composer
 
 export const useGui = () => gui
-
-// Multiplayer states and sync helper
-export const useGame = () => game
 
 export const addPass = (pass: Pass) => {
   composer.addPass(pass)

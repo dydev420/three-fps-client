@@ -2,7 +2,6 @@ import { Vector3 } from 'three'
 import {
   addPass,
   useCamera,
-  useGame,
   // useControls,
   useGui,
   usePhysics,
@@ -22,6 +21,7 @@ import CubesManager from './levels/actors/CubesManager'
 import { addInputListeners } from './gameInput';
 import DebugManager from './debug/DebugManager';
 import PawnManager from './render/pawn/PawnManager';
+import { createGame } from './game'
 
 const MOTION_BLUR_AMOUNT = 0.5
 
@@ -30,7 +30,6 @@ const startApp = async () => {
   const renderer = useRenderer();
   const scene = useScene();
   const camera = useCamera();
-  const game = useGame();
   const physicsWorld = usePhysics();
 
   camera.position.x += 10;
@@ -38,6 +37,12 @@ const startApp = async () => {
   camera.lookAt(new Vector3(0));
   const gui = useGui();
 
+  /**
+   * Multiplayer client and synced mesh systems
+   */
+  const game = createGame();
+  const pawnManager = new PawnManager(scene, game, camera);
+  const debugManager = new DebugManager(scene, game, false);
 
   /**
    * Register input listeners
@@ -57,10 +62,8 @@ const startApp = async () => {
   const cubesManager = new CubesManager(scene);
   mainLevel.addActor(cubesManager);
 
-  const pawnManager = new PawnManager(scene, game, camera);
+  // multiplayer pawns and debug
   mainLevel.addActor(pawnManager);
-
-  const debugManager = new DebugManager(scene, game, false);
   mainLevel.addActor(debugManager);
 
   /**
