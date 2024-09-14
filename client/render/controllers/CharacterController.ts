@@ -4,12 +4,12 @@ import { RAPIER, usePhysics, useRenderSize, useScene } from '../init'
 import { useRenderer } from './../init'
 import { PhysicsObject, addPhysics } from '../physics/physics'
 import { GRAVITY } from '../physics/utils/constants'
-import { _calculateObjectSize } from './utils/objects'
-import { clamp, lerp, easeOutExpo, EaseOutCirc, UpDownCirc } from './utils/math'
+import { _calculateObjectSize } from '../../helpers/objects'
+import { clamp, lerp, easeOutExpo, EaseOutCirc, UpDownCirc } from '../../helpers/math'
 import AvatarController from './AvatarController';
 import InputManager, { KEYS } from './InputManager';
 import ZoomController from './ZoomController';
-import { DOWN, FIVE, FORWARD, HALF_PI, LEFT, ONE, RIGHT, UP, ZERO } from './utils/helpers';
+import { DOWN, FIVE, FORWARD, HALF_PI, LEFT, ONE, RIGHT, UP, ZERO } from '../../helpers/helpers';
 import HeightController from './HeightController';
 import HeadBobController from './HeadBbController';
 

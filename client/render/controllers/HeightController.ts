@@ -1,6 +1,6 @@
 import { GRAVITY } from "../physics/utils/constants"
-import { JUMP_AMPLITUDE, JUMP_DURATION } from "./utils/constants"
-import { clamp, lerp, UpDownCirc } from "./utils/math"
+import { JUMP_AMPLITUDE, JUMP_DURATION } from "../../helpers/constants"
+import { clamp, lerp, UpDownCirc } from "../../helpers/math"
 
 class HeightController {
   height: number

@@ -1,5 +1,5 @@
-import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, SCROLL_ANIMATION_SPEED } from "./utils/constants"
-import { clamp, easeOutExpo, lerp } from "./utils/math"
+import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, SCROLL_ANIMATION_SPEED } from "../../helpers/constants"
+import { clamp, easeOutExpo, lerp } from "../../helpers/math"
 
 // * Responsible for the camera zoom on the character (first-person-mode and third-person-mode)
 class ZoomController {

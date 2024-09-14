@@ -1,7 +1,7 @@
 import { Vector3, Mesh } from "three";
 import { addPhysics, PhysicsObject } from '../physics/physics';
-import { _addCapsule, _removeCapsule } from '../controllers/utils/meshes';
-import { _calculateObjectSize } from '../controllers/utils/objects';
+import { _addCapsule, _removeCapsule } from '../../helpers/meshes';
+import { _calculateObjectSize } from '../../helpers/objects';
 
 class CharacterPawn extends Mesh {
   position:Vector3;

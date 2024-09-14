@@ -1,6 +1,6 @@
 import { CapsuleGeometry, Mesh, MeshStandardMaterial } from 'three'
-import { RAPIER, usePhysics, usePhysicsObjects, useScene, useTick } from '../../init'
-import { addPhysics } from '../../physics/physics'
+import { RAPIER, usePhysics, usePhysicsObjects, useScene, useTick } from '../render/init'
+import { addPhysics } from '../render/physics/physics'
 
 const _addCapsule = (
   height: number,

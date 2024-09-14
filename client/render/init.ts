@@ -10,7 +10,7 @@ import {GUI} from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
 import TickManager from './tickManager'
 import AvatarController from './controllers/AvatarController'
-import { _addCapsule } from './controllers/utils/meshes'
+import { _addCapsule } from '../helpers/meshes'
 import GeneralLoader from './loaders/generalLoader';
 import InitRapier from './physics/RAPIER'
 import { PhysicsObject } from './physics/physics'

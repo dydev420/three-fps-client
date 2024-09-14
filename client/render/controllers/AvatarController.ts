@@ -1,5 +1,5 @@
 import { Mesh, PerspectiveCamera } from 'three';
-import { _calculateObjectSize } from './utils/objects';
+import { _calculateObjectSize } from '../../helpers/objects';
 import CharacterController from './CharacterController';
 
 // Responsible for controlling the avatar mesh and the character controller

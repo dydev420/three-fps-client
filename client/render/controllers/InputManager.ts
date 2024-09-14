@@ -1,5 +1,5 @@
 import { useRenderer } from './../init'
-import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, SCROLL_LEVEL_STEP } from './utils/constants'
+import { MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL, SCROLL_LEVEL_STEP } from '../../helpers/constants'
 
 
 // * supported keyboard keys
