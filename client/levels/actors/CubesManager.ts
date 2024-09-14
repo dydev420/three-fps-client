@@ -46,10 +46,6 @@ class CubesManager implements LevelActor {
     return this;
   }
 
-  playActor = () => {
-    // empty??
-  };
-
   update = (deltaTime: number) => {
     
   }

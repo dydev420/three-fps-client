@@ -8,17 +8,13 @@ import Rapier from '@dimforge/rapier3d'
 
 import {GUI} from 'three/examples/jsm/libs/lil-gui.module.min.js';
 
-import TickManager from './tickManager'
 import AvatarController from './controllers/AvatarController'
 import { _addCapsule } from '../helpers/meshes'
 import GeneralLoader from './loaders/generalLoader';
 import InitRapier from './physics/RAPIER'
 import { PhysicsObject } from './physics/physics'
-import PhysicsDebugRenderer from './physics/PhysicsDebugRenderer';
 import { GRAVITY } from './physics/utils/constants'
 import { createGame, type Game } from '../game'
-import PawnManager from './pawn/PawnManager';
-import DebugManager from '../debug/DebugManager'
 
 
 let scene: Scene,
@@ -38,12 +34,8 @@ let scene: Scene,
   RAPIER: typeof Rapier,
   physicsWorld: Rapier.World,
   physicsObjects: Array<PhysicsObject>,
-  physicsDebugRenderer:  PhysicsDebugRenderer,
-  game: Game,
-  pawnManager: PawnManager,
-  debugManager: DebugManager;
+  game: Game;
 
-const renderTickManager = new TickManager()
 
 export const initEngine = async () => {
   // physics -> Rapier
@@ -55,7 +47,6 @@ export const initEngine = async () => {
   // rendering -> THREE.js
   scene = new Scene()
 
-  physicsDebugRenderer = new PhysicsDebugRenderer(scene, physicsWorld);
 
   renderWidth = window.innerWidth
   renderHeight = window.innerHeight
@@ -115,8 +106,6 @@ export const initEngine = async () => {
   
   // Multiplayer client
   game = createGame();
-  pawnManager = new PawnManager(game, camera);
-  debugManager = new DebugManager(scene, game, false);
 
   // advanced controls
   controls = new AvatarController(capsule, camera);
@@ -126,8 +115,6 @@ export const initEngine = async () => {
 
   gltfLoader = new GLTFLoader()
   textureLoader= new TextureLoader()
-
-  renderTickManager.startLoop()
 }
 
 export const useRenderer = () => renderer
@@ -150,20 +137,9 @@ export const useGui = () => gui
 
 // Multiplayer states and sync helper
 export const useGame = () => game
-export const usePawnManager = () => pawnManager
-export const useDebugManager = () => debugManager
 
 export const addPass = (pass: Pass) => {
   composer.addPass(pass)
-}
-
-export const useTick = (fn: Function) => {
-  if (renderTickManager) {
-    const _tick = (e: any) => {
-      fn(e.data)
-    }
-    renderTickManager.addEventListener('tick', _tick)
-  }
 }
 
 export const useGltfLoader = () => gltfLoader
@@ -171,6 +147,5 @@ export const useTextureLoader = () => textureLoader
 export const useLoader = () => generalLoader
 export const usePhysics = () => physicsWorld
 export const usePhysicsObjects = () => physicsObjects
-export const usePhysicsDebugRenderer = () => physicsDebugRenderer
 
 export { RAPIER }

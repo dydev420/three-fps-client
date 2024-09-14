@@ -1,5 +1,5 @@
 import { BoxGeometry, CapsuleGeometry, Color, DoubleSide, Mesh, MeshPhysicalMaterial, MeshStandardMaterial, PlaneGeometry, Scene, Vector3 } from 'three'
-import { RAPIER, usePhysics, usePhysicsObjects, useScene, useTick } from '../render/init'
+import { RAPIER, usePhysics, usePhysicsObjects, useScene } from '../render/init'
 import { addPhysics } from '../render/physics/physics'
 
 export const _addCapsule = (

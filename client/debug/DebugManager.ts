@@ -1,19 +1,28 @@
-import { Scene } from 'three';
+import { Group, Scene } from 'three';
 import { Game } from "../game";
 import PlayerDebugBox from "./PlayerDebugBox";
+import LevelActor from '../levels/interfaces/LevelActor';
 
-class DebugManager {
-  selfUpdate: boolean;
+class DebugManager implements LevelActor {
   scene: Scene;
+  group: Group;
+  selfUpdate: boolean;
   game: Game;
   playerBoxes: Map<number, PlayerDebugBox>;
 
   constructor(scene: Scene, game: Game, selfUpdate: boolean = false) {
     this.selfUpdate = selfUpdate;
     this.scene = scene;
+    this.group = new Group();
     this.game = game;
     this.playerBoxes = new Map();
   }
+
+  init = () => {
+    // Just add empty group to scene
+    this.scene.add(this.group);
+    return this;
+  };
 
   update(deltaTime: number) {
     if(this.game.players) {

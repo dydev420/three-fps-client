@@ -1,21 +1,32 @@
-import { PerspectiveCamera } from 'three';
+import { Group, PerspectiveCamera, Scene } from 'three';
 import Character from "../../characters/interfaces/Character";
 import MyPlayer from "../../characters/MyPlayer";
 import OnlinePlayer from "../../characters/OnlinePlayer";
 import type { Game } from "../../game";
 import { Player } from '../../../common/types';
+import LevelActor from '../../levels/interfaces/LevelActor';
 
-class PawnManager {
+class PawnManager implements LevelActor {
   game: Game;
+  scene: Scene;
   camera: PerspectiveCamera;
+  group: Group;
   pawns: Map<number, Character>;
   myPawn: MyPlayer | undefined;
   
-  constructor(game: Game, camera: PerspectiveCamera) {
+  constructor(scene: Scene, game: Game, camera: PerspectiveCamera) {
     this.game = game;
+    this.scene = scene;
+    this.group = new Group();
     this.camera = camera;
     this.pawns = new Map();
   }
+
+  init = () => {
+    // Just add empty group to scene
+    this.scene.add(this.group);
+    return this;
+  };
 
   update(deltaTime: number) {
     
